@@ -1,5 +1,0 @@
-A leaf-spine topology requires at least two spine switches and two leaf switches
-Nuber of leaf switches will always be >= Spine switches
-Every leaf connects to every spine
-Spines never have connections directly to other Spines
-Leafs never have connections directly to other Leafs
