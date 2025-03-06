@@ -13,7 +13,6 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ServerConfig } from "./types";
+import { ServerConfig } from "./serverConfig.types";
 import { Network, Server } from "lucide-react";
 import {
   NETWORK_TYPES,
@@ -33,23 +32,17 @@ import {
   PORT_SPEEDS,
 } from "@/constants";
 
-export function NetworkDesignerForm() {
+interface NetworkDesignerFormProps {
+  values: ServerConfig;
+  onSubmit: (data: ServerConfig) => void;
+}
+
+export function NetworkDesignerForm({
+  values,
+  onSubmit,
+}: NetworkDesignerFormProps) {
   const form = useForm<ServerConfig>({
-    defaultValues: {
-      servers: 10,
-      frontendNetwork: {
-        networkType: "spine-leaf",
-        oversubscriptionRatio: "1:1",
-        nicPorts: 4,
-        portSpeed: "100G",
-      },
-      gpuNetwork: {
-        networkType: "spine-leaf",
-        oversubscriptionRatio: "1:1",
-        nicPorts: 4,
-        portSpeed: "100G",
-      },
-    },
+    defaultValues: values,
   });
 
   // Watch network type values for conditional rendering
@@ -57,9 +50,9 @@ export function NetworkDesignerForm() {
   const gpuNetworkType = form.watch("gpuNetwork.networkType");
 
   // Handle form submission
-  const onSubmit = (data: ServerConfig) => {
+  const handleSubmit = (data: ServerConfig) => {
+    onSubmit(data);
     toast.success("Network design generated!");
-    console.log(data);
   };
 
   return (
@@ -75,7 +68,10 @@ export function NetworkDesignerForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
+          >
             <FormField
               control={form.control}
               name="servers"
@@ -85,11 +81,9 @@ export function NetworkDesignerForm() {
                   <FormControl>
                     <Input
                       type="number"
-                      min="1"
-                      max="100"
                       {...field}
                       onChange={(e) =>
-                        field.onChange(parseInt(e.target.value, 10) || 1)
+                        field.onChange(parseInt(e.target.value, 10))
                       }
                     />
                   </FormControl>
