@@ -1,0 +1,23 @@
+servers:
+  quantity: 10
+  networks:
+    - name: "frontend"
+      type: "lacp"
+      nic-ports:
+        quantity: 2
+        speed: "25G"
+    - name: "gpu"
+      type: "spine-leaf"
+      oversubscription_ratio: "1:1"  # Non-blocking
+      nic-ports:
+        quantity: 4
+        speed: "100G"
+
+
+cisco-switches:
+  - name: "9336C-FX2"
+    networks:
+      - type: "spine-leaf"
+        switch-ports:
+          - quantity: 36
+            speed: "100G"
