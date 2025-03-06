@@ -10,86 +10,21 @@ import {
 } from "@xyflow/react";
 import { NetworkDesign } from "../../types/serverDesign.types";
 import "@xyflow/react/dist/style.css";
-import { Server, Network } from "lucide-react";
+import { ServerNode } from "./ServerNode";
+import { LeafNode } from "./LeafNode";
+import { SpineNode } from "./SpineNode";
 
-// Custom node types
-const ServerNode = ({ data }: { data: any }) => (
-  <div className="p-2 bg-gray-700 rounded-md border-2 border-gray-600 w-32 text-white shadow-md">
-    <div className="flex items-center justify-center mb-1">
-      <Server className="mr-1" size={16} />
-      <div className="text-xs font-semibold">{data.label}</div>
-    </div>
-    <div className="text-xs text-gray-300">
-      {data.networks?.map((net: any) => (
-        <div key={net.name} className="flex items-center">
-          <span className="w-16">{net.name}:</span>
-          <span>
-            {net.ports} x {net.speed}
-          </span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-const LeafNode = ({ data }: { data: any }) => (
-  <div className="p-2 bg-purple-500 rounded-md border-2 border-purple-600 w-36 text-white shadow-md">
-    <div className="flex items-center justify-center mb-1">
-      <Network className="mr-1" size={16} />
-      <div className="text-xs font-semibold">{data.label}</div>
-    </div>
-    <div className="text-xs">
-      {data.downlinks && (
-        <div className="flex items-center">
-          <span className="w-20">Downlinks:</span>
-          <span>{data.downlinks}</span>
-        </div>
-      )}
-      {data.uplinks && (
-        <div className="flex items-center">
-          <span className="w-20">Uplinks:</span>
-          <span>{data.uplinks}</span>
-        </div>
-      )}
-      {data.ports && (
-        <div className="flex items-center">
-          <span className="w-20">Ports:</span>
-          <span>{data.ports}</span>
-        </div>
-      )}
-    </div>
-  </div>
-);
-
-const SpineNode = ({ data }: { data: any }) => (
-  <div className="p-2 bg-blue-500 rounded-md border-2 border-blue-600 w-36 text-white shadow-md">
-    <div className="flex items-center justify-center mb-1">
-      <Network className="mr-1" size={16} />
-      <div className="text-xs font-semibold">{data.label}</div>
-    </div>
-    <div className="text-xs">
-      <div className="flex items-center">
-        <span className="w-20">Downlinks:</span>
-        <span>{data.downlinks}</span>
-      </div>
-    </div>
-  </div>
-);
+const nodeTypes: NodeTypes = {
+  server: ServerNode,
+  leaf: LeafNode,
+  spine: SpineNode,
+};
 
 interface DiagramProps {
   networkDesign: NetworkDesign;
 }
 
 export function Diagram({ networkDesign }: DiagramProps) {
-  const nodeTypes: NodeTypes = useMemo(
-    () => ({
-      server: ServerNode,
-      leaf: LeafNode,
-      spine: SpineNode,
-    }),
-    []
-  );
-
   // Create diagram nodes
   const nodes: Node[] = useMemo(() => {
     const result: Node[] = [];
@@ -220,7 +155,7 @@ export function Diagram({ networkDesign }: DiagramProps) {
   }, [networkDesign]);
 
   return (
-    <div className="w-full h-[800px] border rounded-md overflow-hidden">
+    <div className="w-full h-full border border-x-0 border-b-0 rounded-md overflow-hidden">
       <ReactFlow
         nodes={nodes}
         edges={edges}
