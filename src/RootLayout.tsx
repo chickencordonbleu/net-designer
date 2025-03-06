@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import { AppSidebar } from "./components/app-sidebar";
 import { ModeToggle } from "./components/mode-toggle";
 import {
@@ -13,7 +14,7 @@ import {
   SidebarTrigger,
 } from "./components/ui/sidebar";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -35,16 +36,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
+          <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
             {children}
           </div>
         </div>
       </SidebarInset>
+      <Toaster position="top-right" />
     </SidebarProvider>
   );
 }

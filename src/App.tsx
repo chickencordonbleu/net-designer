@@ -1,13 +1,13 @@
 import { ThemeProvider } from "./components/theme-provider";
-import Layout from "./Layout";
-import { NetworkForm } from "./NetworkForm";
+import { RootLayout } from "./RootLayout";
+import { NetworkDesigner } from "./pages/NetworkDesigner/NetworkDesigner";
 
 export function App() {
   return (
     <ThemeProvider>
-      <Layout>
-        <NetworkForm />
-      </Layout>
+      <RootLayout>
+        <NetworkDesigner />
+      </RootLayout>
     </ThemeProvider>
   );
 }
