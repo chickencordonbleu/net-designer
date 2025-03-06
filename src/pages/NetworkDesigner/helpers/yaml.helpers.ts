@@ -1,5 +1,5 @@
-import { ServerConfig } from "./serverConfig.types";
-import { NetworkDesign, CISCO_SWITCH } from "./serverDesign.types";
+import { ServerConfig } from "../types/serverConfig.types";
+import { NetworkDesign, CISCO_SWITCH } from "../types/serverDesign.types";
 
 export const generateYamlConfig = (
   serverConfig: ServerConfig,

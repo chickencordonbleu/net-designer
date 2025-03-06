@@ -1,5 +1,9 @@
-import { ServerConfig } from "./serverConfig.types";
-import { NetworkDesign, CISCO_SWITCH, LeafSwitch } from "./serverDesign.types";
+import { ServerConfig } from "../types/serverConfig.types";
+import {
+  NetworkDesign,
+  CISCO_SWITCH,
+  LeafSwitch,
+} from "../types/serverDesign.types";
 
 export const generateNetworkDesign = (
   serverConfig: ServerConfig

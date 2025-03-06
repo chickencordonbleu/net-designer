@@ -1,18 +1,18 @@
 import { Toaster } from "sonner";
-import { AppSidebar } from "./components/app-sidebar";
-import { ModeToggle } from "./components/mode-toggle";
+import { AppSidebar } from "../components/app-sidebar";
+import { ModeToggle } from "../components/mode-toggle";
 import {
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-} from "./components/ui/breadcrumb";
-import { Separator } from "./components/ui/separator";
+} from "../components/ui/breadcrumb";
+import { Separator } from "../components/ui/separator";
 import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
-} from "./components/ui/sidebar";
+} from "../components/ui/sidebar";
 
 export function RootLayout({ children }: { children: React.ReactNode }) {
   return (

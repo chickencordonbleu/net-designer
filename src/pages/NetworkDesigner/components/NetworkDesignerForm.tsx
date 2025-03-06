@@ -24,13 +24,13 @@ import {
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ServerConfig } from "./serverConfig.types";
 import { Network, Server } from "lucide-react";
+import { ServerConfig } from "../types/serverConfig.types";
 import {
   NETWORK_TYPES,
   OVERSUBSCRIPTION_RATIOS,
   PORT_SPEEDS,
-} from "@/constants";
+} from "../constants/constants";
 
 interface NetworkDesignerFormProps {
   values: ServerConfig;

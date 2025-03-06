@@ -10,9 +10,9 @@ import {
 import Editor from "@monaco-editor/react";
 import { Code2, Copy } from "lucide-react";
 import { toast } from "sonner";
-import { ServerConfig } from "./serverConfig.types";
-import { NetworkDesign } from "./serverDesign.types";
-import { generateYamlConfig } from "./yaml.helpers";
+import { generateYamlConfig } from "../helpers/yaml.helpers";
+import { ServerConfig } from "../types/serverConfig.types";
+import { NetworkDesign } from "../types/serverDesign.types";
 
 interface YamlSnipperProps {
   networkDesign: NetworkDesign;
