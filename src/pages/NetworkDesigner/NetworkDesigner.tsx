@@ -8,7 +8,7 @@ import { NetworkStats } from "./components/NetworkStats/NetworkStats";
 
 export function NetworkDesigner() {
   const [serverConfig, setServerConfig] = useState<ServerConfig>({
-    servers: 10,
+    servers: 2,
     frontendNetwork: {
       networkType: "lacp",
       oversubscriptionRatio: "1:1",

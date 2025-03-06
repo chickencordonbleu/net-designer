@@ -13,6 +13,7 @@ import "@xyflow/react/dist/style.css";
 import { ServerNode } from "./ServerNode";
 import { LeafNode } from "./LeafNode";
 import { SpineNode } from "./SpineNode";
+import { DownloadDiagram } from "./DownloadDiagram";
 
 const nodeTypes: NodeTypes = {
   server: ServerNode,
@@ -28,8 +29,8 @@ export function Diagram({ networkDesign }: DiagramProps) {
   // Create diagram nodes
   const nodes: Node[] = useMemo(() => {
     const result: Node[] = [];
-    const nodeSpacing = 150;
-    const networkGroupSpacing = 600;
+    const nodeSpacing = 300;
+    const networkGroupSpacing = 700;
 
     // Get unique networks
     const networks = Array.from(
@@ -167,6 +168,7 @@ export function Diagram({ networkDesign }: DiagramProps) {
         <Controls />
         <MiniMap />
         <Background />
+        <DownloadDiagram />
       </ReactFlow>
     </div>
   );
