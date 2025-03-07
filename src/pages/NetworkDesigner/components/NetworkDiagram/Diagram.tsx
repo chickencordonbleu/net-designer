@@ -41,6 +41,8 @@ const elkOptions = {
   "elk.direction": "UP",
   "elk.layered.crossingMinimization.strategy": "LAYER_SWEEP",
   "elk.layered.nodePlacement.strategy": "NETWORK_SIMPLEX",
+  "elk.layered.crossingMinimization.forceNodeModelOrder": "true", // Enforce node order in each layer
+  "elk.layered.considerModelOrder.strategy": "NODES_AND_EDGES", // Consider order for both nodes and edges
 };
 
 function DiagramDesign({ networkDesign }: DiagramProps) {
@@ -219,9 +221,6 @@ function DiagramDesign({ networkDesign }: DiagramProps) {
   // Run layout on initial render
   useEffect(() => {
     if (initialNodes.length > 0 && initialEdges.length > 0) {
-      setNodes(initialNodes);
-      setEdges(initialEdges);
-
       getLayoutedElements(initialNodes, initialEdges).then(
         ({ nodes: layoutedNodes, edges: layoutedEdges }) => {
           setNodes(layoutedNodes);
