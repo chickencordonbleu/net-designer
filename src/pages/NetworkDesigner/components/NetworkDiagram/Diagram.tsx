@@ -249,14 +249,15 @@ function DiagramDesign({ networkDesign }: DiagramProps) {
   return (
     <div className="w-full h-full border border-x-0 border-b-0 rounded-md overflow-hidden">
       <ReactFlow
-        colorMode={colorMode}
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        nodeTypes={nodeTypes}
-        fitView
         attributionPosition="bottom-right"
+        colorMode={colorMode}
+        edges={edges}
+        fitView
+        nodeTypes={nodeTypes}
+        nodes={nodes}
+        minZoom={0.1}
+        onEdgesChange={onEdgesChange}
+        onNodesChange={onNodesChange}
         proOptions={{ hideAttribution: true }}
       >
         <Controls />
