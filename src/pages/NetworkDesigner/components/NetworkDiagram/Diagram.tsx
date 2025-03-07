@@ -29,6 +29,7 @@ const nodeTypes: NodeTypes = {
 
 interface DiagramProps {
   networkDesign: NetworkDesign;
+  fullScreen: boolean;
 }
 
 const elk = new ELK();
@@ -45,12 +46,16 @@ const elkOptions = {
   "elk.layered.considerModelOrder.strategy": "NODES_AND_EDGES", // Consider order for both nodes and edges
 };
 
-function DiagramDesign({ networkDesign }: DiagramProps) {
+function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
   const colorMode = useTheme().theme === "dark" ? "dark" : "light";
   const isDarkMode = colorMode === "dark";
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const { fitView } = useReactFlow();
+
+  useEffect(() => {
+    fitView();
+  }, [fullScreen, fitView]);
 
   // Create initial nodes without positions
   const initialNodes: Node[] = useMemo(() => {
@@ -265,10 +270,10 @@ function DiagramDesign({ networkDesign }: DiagramProps) {
   );
 }
 
-export function Diagram({ networkDesign }: DiagramProps) {
+export function Diagram({ networkDesign, fullScreen }: DiagramProps) {
   return (
     <ReactFlowProvider>
-      <DiagramDesign networkDesign={networkDesign} />
+      <DiagramDesign networkDesign={networkDesign} fullScreen={fullScreen} />
     </ReactFlowProvider>
   );
 }
