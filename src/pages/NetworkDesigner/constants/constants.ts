@@ -2,7 +2,7 @@ import {
   NetworkType,
   OversubscriptionRatio,
   PortSpeed,
-} from "./serverConfig.types";
+} from "../types/serverConfig.types";
 
 export const NETWORK_TYPES: { value: NetworkType; label: string }[] = [
   { value: "spine-leaf", label: "Spine-Leaf" },

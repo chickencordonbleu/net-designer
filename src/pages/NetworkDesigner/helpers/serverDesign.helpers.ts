@@ -158,7 +158,7 @@ export const generateNetworkDesign = (
           (n) => n.name === network.name
         );
         if (networkInfo) {
-          networkInfo.ports.forEach((port, portIndex) => {
+          networkInfo.ports.forEach((_, portIndex) => {
             const targetLeafIndex = Math.floor(
               serverPortsAllocated / finalDownlinksPerLeaf
             );
@@ -271,7 +271,7 @@ export const generateNetworkDesign = (
           (n) => n.name === network.name
         );
         if (networkInfo) {
-          networkInfo.ports.forEach((port, portIndex) => {
+          networkInfo.ports.forEach((_, portIndex) => {
             const targetSwitch =
               portIndex % 2 === 0 ? lacpSwitch1 : lacpSwitch2;
             const portOnSwitch = Math.floor(serverIndex + portIndex / 2);
