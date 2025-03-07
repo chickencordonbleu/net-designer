@@ -13,7 +13,7 @@ interface Props {
 export function LeafNode({ data }: Props) {
   return (
     <>
-      <Handle type="target" position={Position.Left} />
+      <Handle type="source" position={Position.Top} id="a" />
       <div className="p-2 bg-purple-500 rounded-md border-2 border-purple-600 w-44 text-white shadow-md">
         <div className="flex items-center justify-center mb-1">
           <Leaf className="mr-1" size={16} />
@@ -40,7 +40,7 @@ export function LeafNode({ data }: Props) {
           )}
         </div>
       </div>
-      <Handle type="source" position={Position.Right} id="a" />
+      <Handle type="target" position={Position.Bottom} />
     </>
   );
 }

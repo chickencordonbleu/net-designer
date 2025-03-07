@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback, useEffect } from "react";
 import {
   ReactFlow,
   Node,
@@ -7,6 +7,10 @@ import {
   Controls,
   MiniMap,
   NodeTypes,
+  useNodesState,
+  useEdgesState,
+  useReactFlow,
+  ReactFlowProvider,
 } from "@xyflow/react";
 import { NetworkDesign } from "../../types/serverDesign.types";
 import "@xyflow/react/dist/style.css";
@@ -15,6 +19,7 @@ import { LeafNode } from "./LeafNode";
 import { SpineNode } from "./SpineNode";
 import { DownloadDiagram } from "./DownloadDiagram";
 import { useTheme } from "@/components/theme-provider";
+import ELK from "elkjs/lib/elk.bundled.js";
 
 const nodeTypes: NodeTypes = {
   server: ServerNode,
@@ -26,13 +31,28 @@ interface DiagramProps {
   networkDesign: NetworkDesign;
 }
 
-export function Diagram({ networkDesign }: DiagramProps) {
+const elk = new ELK();
+
+// ELK layout options
+const elkOptions = {
+  "elk.algorithm": "layered",
+  "elk.layered.spacing.nodeNodeBetweenLayers": "150",
+  "elk.spacing.nodeNode": "80",
+  "elk.direction": "UP",
+  "elk.layered.crossingMinimization.strategy": "LAYER_SWEEP",
+  "elk.layered.nodePlacement.strategy": "NETWORK_SIMPLEX",
+};
+
+function DiagramDesign({ networkDesign }: DiagramProps) {
   const colorMode = useTheme().theme === "dark" ? "dark" : "light";
-  // Create diagram nodes
-  const nodes: Node[] = useMemo(() => {
+  const isDarkMode = colorMode === "dark";
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const { fitView } = useReactFlow();
+
+  // Create initial nodes without positions
+  const initialNodes: Node[] = useMemo(() => {
     const result: Node[] = [];
-    const nodeSpacing = 300;
-    const networkGroupSpacing = 700;
 
     // Get unique networks
     const networks = Array.from(
@@ -42,30 +62,22 @@ export function Diagram({ networkDesign }: DiagramProps) {
       ])
     );
 
-    // Calculate positioning
-    networks.forEach((network, networkIndex) => {
-      const networkXOffset = networkIndex * networkGroupSpacing;
-
-      // Add spine switches first (top layer)
+    // Add spine switches first (top layer)
+    networks.forEach((network) => {
       const spines = networkDesign.spineSwitches.filter(
         (s) => s.network === network
       );
-      const spineWidth = spines.length * nodeSpacing;
 
-      spines.forEach((spine, spineIndex) => {
-        const xPos =
-          networkXOffset +
-          spineIndex * nodeSpacing -
-          spineWidth / 2 +
-          nodeSpacing / 2;
+      spines.forEach((spine) => {
         result.push({
           id: spine.id,
           type: "spine",
           data: {
             label: spine.id,
             downlinks: `${spine.downlinks.length} x ${spine.downlinks[0].speed}`,
+            network,
           },
-          position: { x: xPos, y: 0 },
+          position: { x: 0, y: 0 }, // Initial position will be set by ELK
         });
       });
 
@@ -73,20 +85,14 @@ export function Diagram({ networkDesign }: DiagramProps) {
       const leaves = networkDesign.leafSwitches.filter(
         (l) => l.network === network
       );
-      const leafWidth = leaves.length * nodeSpacing;
 
-      leaves.forEach((leaf, leafIndex) => {
-        const xPos =
-          networkXOffset +
-          leafIndex * nodeSpacing -
-          leafWidth / 2 +
-          nodeSpacing / 2;
-
+      leaves.forEach((leaf) => {
         const nodeData = {
           label: leaf.id,
           downlinks: "",
           uplinks: "",
           ports: "",
+          network,
         };
 
         if (leaf.downlinks && leaf.uplinks) {
@@ -100,19 +106,13 @@ export function Diagram({ networkDesign }: DiagramProps) {
           id: leaf.id,
           type: "leaf",
           data: nodeData,
-          position: { x: xPos, y: 200 },
+          position: { x: 0, y: 0 }, // Initial position will be set by ELK
         });
       });
     });
 
     // Add servers (bottom layer)
-    const servers = networkDesign.servers;
-    const serverWidth = servers.length * nodeSpacing;
-
-    servers.forEach((server, serverIndex) => {
-      const xPos =
-        serverIndex * nodeSpacing - serverWidth / 2 + nodeSpacing / 2;
-
+    networkDesign.servers.forEach((server) => {
       const networkData = server.networks.map((n) => ({
         name: n.name,
         ports: n.ports.length,
@@ -126,7 +126,7 @@ export function Diagram({ networkDesign }: DiagramProps) {
           label: server.id,
           networks: networkData,
         },
-        position: { x: xPos, y: 400 },
+        position: { x: 0, y: 0 }, // Initial position will be set by ELK
       });
     });
 
@@ -134,7 +134,7 @@ export function Diagram({ networkDesign }: DiagramProps) {
   }, [networkDesign]);
 
   // Create edges from connections
-  const edges: Edge[] = useMemo(() => {
+  const initialEdges: Edge[] = useMemo(() => {
     return networkDesign.connections.map((conn) => {
       // Determine edge style based on network
       let edgeStyle = {};
@@ -145,22 +145,106 @@ export function Diagram({ networkDesign }: DiagramProps) {
         edgeStyle = { stroke: "#ec4899" }; // Pink for gpu
       }
 
+      // Use dark mode appropriate label background
+      const labelBgStyle = isDarkMode
+        ? { fill: "#1e293b", fillOpacity: 0.8 } // Dark slate background for dark mode
+        : { fill: "#f1f5f9", fillOpacity: 0.7 }; // Light background for light mode
+
+      // Use appropriate text color for the mode
+      const labelStyle = {
+        fontSize: 8,
+        fill: isDarkMode ? "#e2e8f0" : "#334155", // Light text for dark mode, dark text for light mode
+      };
+
       return {
         id: conn.id,
         source: conn.source,
         target: conn.target,
-        animated: false,
+        animated: true,
         style: edgeStyle,
         data: {
           speed: conn.speed,
           network: conn.network,
         },
         label: conn.speed,
-        labelBgStyle: { fill: "#f1f5f9", fillOpacity: 0.7 },
-        labelStyle: { fontSize: 8 },
+        labelBgStyle: labelBgStyle,
+        labelStyle: labelStyle,
       };
     });
-  }, [networkDesign]);
+  }, [networkDesign, isDarkMode]);
+
+  // Apply ELK layout
+  const getLayoutedElements = useCallback(
+    (nodes: Node[], edges: Edge[]) => {
+      // Create ELK graph format
+      const elkGraph = {
+        id: "root",
+        layoutOptions: elkOptions,
+        children: nodes.map((node) => ({
+          id: node.id,
+          width: 180, // Approximate node width
+          height: 70, // Approximate node height
+          // Set node constraints based on type for layering
+          layoutOptions: {
+            "elk.layered.layering.layerId":
+              node.type === "spine" ? "0" : node.type === "leaf" ? "1" : "2",
+          },
+        })),
+        edges: edges.map((edge) => ({
+          id: edge.id,
+          sources: [edge.source],
+          targets: [edge.target],
+        })),
+      };
+
+      return elk.layout(elkGraph).then((layoutedGraph) => {
+        // Apply layout changes to the nodes
+        const layoutedNodes = nodes.map((node) => {
+          const elkNode = layoutedGraph.children?.find((n) => n.id === node.id);
+          if (elkNode) {
+            return {
+              ...node,
+              position: {
+                x: elkNode.x || 0,
+                y: elkNode.y || 0,
+              },
+            };
+          }
+          return node;
+        });
+
+        return { nodes: layoutedNodes, edges };
+      });
+    },
+    [elkOptions]
+  );
+
+  // Run layout on initial render
+  useEffect(() => {
+    if (initialNodes.length > 0 && initialEdges.length > 0) {
+      setNodes(initialNodes);
+      setEdges(initialEdges);
+
+      getLayoutedElements(initialNodes, initialEdges).then(
+        ({ nodes: layoutedNodes, edges: layoutedEdges }) => {
+          setNodes(layoutedNodes);
+          setEdges(layoutedEdges);
+
+          // Wait for nodes to render then fit the view
+          setTimeout(() => {
+            fitView({ padding: 0.2 });
+          }, 50);
+        }
+      );
+    }
+  }, [
+    initialNodes,
+    initialEdges,
+    getLayoutedElements,
+    setNodes,
+    setEdges,
+    fitView,
+  ]);
 
   return (
     <div className="w-full h-full border border-x-0 border-b-0 rounded-md overflow-hidden">
@@ -168,6 +252,8 @@ export function Diagram({ networkDesign }: DiagramProps) {
         colorMode={colorMode}
         nodes={nodes}
         edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
         fitView
         attributionPosition="bottom-right"
@@ -179,5 +265,13 @@ export function Diagram({ networkDesign }: DiagramProps) {
         <DownloadDiagram />
       </ReactFlow>
     </div>
+  );
+}
+
+export function Diagram({ networkDesign }: DiagramProps) {
+  return (
+    <ReactFlowProvider>
+      <DiagramDesign networkDesign={networkDesign} />
+    </ReactFlowProvider>
   );
 }

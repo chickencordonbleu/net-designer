@@ -15,7 +15,6 @@ interface Props {
 export function ServerNode({ data }: Props) {
   return (
     <>
-      <Handle type="target" position={Position.Left} />
       <div className="p-2 bg-gray-700 rounded-md border-2 border-gray-600 w-40 text-white shadow-md">
         <div className="flex items-center justify-center mb-1">
           <Server className="mr-1" size={16} />
@@ -32,7 +31,7 @@ export function ServerNode({ data }: Props) {
           ))}
         </div>
       </div>
-      <Handle type="source" position={Position.Right} id="a" />
+      <Handle type="source" position={Position.Top} id="a" />
     </>
   );
 }
