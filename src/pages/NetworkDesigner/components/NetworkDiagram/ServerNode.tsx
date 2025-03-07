@@ -1,7 +1,18 @@
 import { Handle, Position } from "@xyflow/react";
 import { Server } from "lucide-react";
 
-export function ServerNode({ data }: { data: any }) {
+interface Props {
+  data: {
+    label: string;
+    networks: Array<{
+      name: string;
+      ports: string;
+      speed: string;
+    }>;
+  };
+}
+
+export function ServerNode({ data }: Props) {
   return (
     <>
       <Handle type="target" position={Position.Left} />
@@ -11,7 +22,7 @@ export function ServerNode({ data }: { data: any }) {
           <div className="text-xs font-semibold">{data.label}</div>
         </div>
         <div className="text-xs text-gray-300">
-          {data.networks?.map((net: any) => (
+          {data.networks?.map((net) => (
             <div key={net.name} className="flex items-center">
               <span className="w-16">{net.name}:</span>
               <span>

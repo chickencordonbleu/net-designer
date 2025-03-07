@@ -1,5 +1,3 @@
-import { count } from "console";
-import { Activity } from "lucide-react";
 import { cloneElement, ReactElement } from "react";
 
 interface BarStatProps {
@@ -22,8 +20,8 @@ const colorMap = [
 export default function BarStat({ title, icon, items }: BarStatProps) {
   const total = items.reduce((acc, item) => acc + item.value, 0);
   return (
-    <div className="bg-white rounded-lg p-5 border">
-      <h3 className="font-medium text-sm text-gray-500 mb-3 flex items-center">
+    <div className="bg-white rounded-lg p-5 border dark:bg-zinc-900">
+      <h3 className="font-medium text-sm text-gray-500 mb-3 flex items-center dark:text-muted-foreground">
         {cloneElement(icon as ReactElement<{ className: string }>, {
           className: "mr-2 h-4 w-4",
         })}

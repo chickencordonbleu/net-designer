@@ -10,3 +10,5 @@
 1. Provide multiple examples of different network topologies to get started.
 2. Yaml network design validator. Upload your design and optimize or identify problems.
 3. Generate the infra as code from the network design.
+4. Create projects, for example you have a client with a network design. You want to keep track of all clients network designs.
+5. Use GEN AI to build network designs.

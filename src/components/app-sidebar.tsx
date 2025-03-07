@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Frame, Server, PieChart, ListCheck, Workflow } from "lucide-react";
+import { Server, PieChart, ListCheck, Workflow } from "lucide-react";
 
 import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
@@ -15,7 +15,7 @@ import {
 // This is sample data.
 const data = {
   user: {
-    name: "NetFoundry",
+    name: "ClusterGen",
     email: "admin@netforge.io",
     avatar: "/avatars/shadcn.jpg",
   },

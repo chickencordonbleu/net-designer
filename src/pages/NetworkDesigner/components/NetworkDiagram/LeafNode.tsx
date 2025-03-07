@@ -1,7 +1,16 @@
 import { Handle, Position } from "@xyflow/react";
 import { Leaf } from "lucide-react";
 
-export function LeafNode({ data }: { data: any }) {
+interface Props {
+  data: {
+    label: string;
+    downlinks: string;
+    uplinks: string;
+    ports: string;
+  };
+}
+
+export function LeafNode({ data }: Props) {
   return (
     <>
       <Handle type="target" position={Position.Left} />

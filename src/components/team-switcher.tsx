@@ -24,7 +24,7 @@ export function TeamSwitcher() {
                 <Waypoints className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="font-medium">NetFoundry</span>
+                <span className="font-medium">ClusterGen</span>
               </div>
             </SidebarMenuButton>
           </DropdownMenuTrigger>

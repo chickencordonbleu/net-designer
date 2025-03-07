@@ -8,8 +8,8 @@ interface NumberStatProps {
 
 export function NumberStat({ icon, label, value }: NumberStatProps) {
   return (
-    <div className="bg-white rounded-lg p-4 border flex flex-col">
-      <div className="text-gray-500 text-sm font-medium mb-1 flex items-center">
+    <div className="bg-white rounded-lg p-4 border flex flex-col dark:bg-zinc-900">
+      <div className="text-gray-500 text-sm font-medium mb-1 flex items-center dark:text-muted-foreground">
         {cloneElement(icon as ReactElement<{ className: string }>, {
           className: "mr-1 h-4 w-4",
         })}

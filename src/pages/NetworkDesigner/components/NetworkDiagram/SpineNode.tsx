@@ -1,7 +1,14 @@
 import { Handle, Position } from "@xyflow/react";
 import { Network } from "lucide-react";
 
-export function SpineNode({ data }: { data: any }) {
+interface Props {
+  data: {
+    label: string;
+    downlinks: string;
+  };
+}
+
+export function SpineNode({ data }: Props) {
   return (
     <>
       <Handle type="target" position={Position.Left} />

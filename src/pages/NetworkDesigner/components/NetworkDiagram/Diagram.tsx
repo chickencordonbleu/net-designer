@@ -14,6 +14,7 @@ import { ServerNode } from "./ServerNode";
 import { LeafNode } from "./LeafNode";
 import { SpineNode } from "./SpineNode";
 import { DownloadDiagram } from "./DownloadDiagram";
+import { useTheme } from "@/components/theme-provider";
 
 const nodeTypes: NodeTypes = {
   server: ServerNode,
@@ -26,6 +27,7 @@ interface DiagramProps {
 }
 
 export function Diagram({ networkDesign }: DiagramProps) {
+  const colorMode = useTheme().theme === "dark" ? "dark" : "light";
   // Create diagram nodes
   const nodes: Node[] = useMemo(() => {
     const result: Node[] = [];
@@ -80,7 +82,12 @@ export function Diagram({ networkDesign }: DiagramProps) {
           leafWidth / 2 +
           nodeSpacing / 2;
 
-        const nodeData: any = { label: leaf.id };
+        const nodeData = {
+          label: leaf.id,
+          downlinks: "",
+          uplinks: "",
+          ports: "",
+        };
 
         if (leaf.downlinks && leaf.uplinks) {
           nodeData.downlinks = `${leaf.downlinks.length} x ${leaf.downlinks[0].speed}`;
@@ -158,6 +165,7 @@ export function Diagram({ networkDesign }: DiagramProps) {
   return (
     <div className="w-full h-full border border-x-0 border-b-0 rounded-md overflow-hidden">
       <ReactFlow
+        colorMode={colorMode}
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
