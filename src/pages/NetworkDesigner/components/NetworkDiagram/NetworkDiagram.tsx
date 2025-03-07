@@ -16,7 +16,7 @@ interface NetworkDiagramProps {
 export function NetworkDiagram({ networkDesign }: NetworkDiagramProps) {
   return (
     <Card className="w-full flex-1 col-span-3 h-[700px] pb-0">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
+      <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex flex-col">
           <CardTitle className="flex items-center">
             <Workflow className="mr-2" size={20} />

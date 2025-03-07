@@ -16,7 +16,7 @@ import {
 const data = {
   user: {
     name: "ClusterGen",
-    email: "admin@netforge.io",
+    email: "admin@clustergen.io",
     avatar: "/avatars/shadcn.jpg",
   },
   projects: [

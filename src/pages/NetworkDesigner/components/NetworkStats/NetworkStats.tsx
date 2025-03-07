@@ -47,7 +47,7 @@ export function NetworkStats({ networkDesign }: NetworkStatsProps) {
 
   return (
     <Card className="w-full col-span-3">
-      <CardHeader className="flex flex-row items-center justify-between pb-2 border-b">
+      <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex flex-col">
           <CardTitle className="flex items-center text-lg">
             <FileDigit className="mr-2" size={20} />
@@ -58,7 +58,7 @@ export function NetworkStats({ networkDesign }: NetworkStatsProps) {
           </CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent className="p-6 pt-0">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <NumberStat
             icon={<Server className="mr-1 h-4 w-4" />}
