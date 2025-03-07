@@ -10,7 +10,7 @@ export function NetworkDesigner() {
   const [serverConfig, setServerConfig] = useState<ServerConfig>({
     servers: 2,
     frontendNetwork: {
-      networkType: "lacp",
+      networkType: "spine-leaf",
       oversubscriptionRatio: "1:1",
       nicPorts: 2,
       portSpeed: "40G",
