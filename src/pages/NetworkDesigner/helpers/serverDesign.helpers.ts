@@ -1,9 +1,5 @@
 import { ServerConfig } from "../types/serverConfig.types";
-import {
-  NetworkDesign,
-  CISCO_SWITCH,
-  LeafSwitch,
-} from "../types/serverDesign.types";
+import { NetworkDesign, CISCO_SWITCH } from "../types/serverDesign.types";
 
 export const generateNetworkDesign = (
   serverConfig: ServerConfig
@@ -233,66 +229,6 @@ export const generateNetworkDesign = (
                 });
               }
             });
-        }
-      });
-    } else if (network.type === "lacp") {
-      // For LACP networks, create a pair of switches for redundancy
-      const lacpSwitch1: LeafSwitch = {
-        id: `${network.name}-switch-1`,
-        network: network.name,
-        ports: Array(
-          Math.ceil((serverConfig.servers * network.nicPorts.quantity) / 2)
-        )
-          .fill(null)
-          .map((_, j) => ({
-            id: `port-${j + 1}`,
-            speed: network.nicPorts.speed,
-          })),
-      };
-
-      const lacpSwitch2: LeafSwitch = {
-        id: `${network.name}-switch-2`,
-        network: network.name,
-        ports: Array(
-          Math.ceil((serverConfig.servers * network.nicPorts.quantity) / 2)
-        )
-          .fill(null)
-          .map((_, j) => ({
-            id: `port-${j + 1}`,
-            speed: network.nicPorts.speed,
-          })),
-      };
-
-      design.leafSwitches.push(lacpSwitch1, lacpSwitch2);
-
-      // Create connections between servers and LACP switches
-      design.servers.forEach((server, serverIndex) => {
-        const networkInfo = server.networks.find(
-          (n) => n.name === network.name
-        );
-        if (networkInfo) {
-          networkInfo.ports.forEach((_, portIndex) => {
-            const targetSwitch =
-              portIndex % 2 === 0 ? lacpSwitch1 : lacpSwitch2;
-            const portOnSwitch = Math.floor(serverIndex + portIndex / 2);
-
-            if (
-              targetSwitch.ports &&
-              portOnSwitch < targetSwitch.ports.length
-            ) {
-              design.connections.push({
-                id: `conn-server${serverIndex + 1}-${network.name}-port${
-                  portIndex + 1
-                }-to-${targetSwitch.id}-port${portOnSwitch + 1}`,
-                source: `server-${serverIndex + 1}`,
-                sourcePort: `${network.name}-port-${portIndex + 1}`,
-                target: targetSwitch.id,
-                targetPort: `port-${portOnSwitch + 1}`,
-                speed: network.nicPorts.speed,
-                network: network.name,
-              });
-            }
-          });
         }
       });
     }

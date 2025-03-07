@@ -42,7 +42,6 @@ export function NetworkDesignerForm({
     defaultValues: values,
   });
 
-  // Handle form submission
   const handleSubmit = (data: ServerConfig) => {
     onSubmit(data);
     toast.success("Network design generated!");
@@ -85,12 +84,10 @@ export function NetworkDesignerForm({
               )}
             />
             <Separator />
-
             <div className="flex items-center mb-4">
               <Network className="mr-2" size={16} />
               <h3 className="font-medium">Frontend Network Configuration</h3>
             </div>
-
             <FormField
               control={form.control}
               name="frontendNetwork.oversubscriptionRatio"
@@ -118,7 +115,6 @@ export function NetworkDesignerForm({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="frontendNetwork.nicPorts"
@@ -140,7 +136,6 @@ export function NetworkDesignerForm({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="frontendNetwork.portSpeed"
@@ -170,12 +165,10 @@ export function NetworkDesignerForm({
             />
 
             <Separator />
-
             <div className="flex items-center mb-4">
               <Network className="mr-2" size={16} />
               <h3 className="font-medium">GPU Network Configuration</h3>
             </div>
-
             <FormField
               control={form.control}
               name="gpuNetwork.oversubscriptionRatio"
@@ -203,7 +196,6 @@ export function NetworkDesignerForm({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="gpuNetwork.nicPorts"
@@ -225,7 +217,6 @@ export function NetworkDesignerForm({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="gpuNetwork.portSpeed"
@@ -253,7 +244,6 @@ export function NetworkDesignerForm({
                 </FormItem>
               )}
             />
-
             <Button type="submit" className="w-full">
               Generate Network Design
             </Button>
