@@ -46,8 +46,8 @@ const elkOptions = {
 function DiagramDesign({ networkDesign }: DiagramProps) {
   const colorMode = useTheme().theme === "dark" ? "dark" : "light";
   const isDarkMode = colorMode === "dark";
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const { fitView } = useReactFlow();
 
   // Create initial nodes without positions
@@ -174,50 +174,47 @@ function DiagramDesign({ networkDesign }: DiagramProps) {
   }, [networkDesign, isDarkMode]);
 
   // Apply ELK layout
-  const getLayoutedElements = useCallback(
-    (nodes: Node[], edges: Edge[]) => {
-      // Create ELK graph format
-      const elkGraph = {
-        id: "root",
-        layoutOptions: elkOptions,
-        children: nodes.map((node) => ({
-          id: node.id,
-          width: 180, // Approximate node width
-          height: 70, // Approximate node height
-          // Set node constraints based on type for layering
-          layoutOptions: {
-            "elk.layered.layering.layerId":
-              node.type === "spine" ? "0" : node.type === "leaf" ? "1" : "2",
-          },
-        })),
-        edges: edges.map((edge) => ({
-          id: edge.id,
-          sources: [edge.source],
-          targets: [edge.target],
-        })),
-      };
+  const getLayoutedElements = useCallback((nodes: Node[], edges: Edge[]) => {
+    // Create ELK graph format
+    const elkGraph = {
+      id: "root",
+      layoutOptions: elkOptions,
+      children: nodes.map((node) => ({
+        id: node.id,
+        width: 180, // Approximate node width
+        height: 70, // Approximate node height
+        // Set node constraints based on type for layering
+        layoutOptions: {
+          "elk.layered.layering.layerId":
+            node.type === "spine" ? "0" : node.type === "leaf" ? "1" : "2",
+        },
+      })),
+      edges: edges.map((edge) => ({
+        id: edge.id,
+        sources: [edge.source],
+        targets: [edge.target],
+      })),
+    };
 
-      return elk.layout(elkGraph).then((layoutedGraph) => {
-        // Apply layout changes to the nodes
-        const layoutedNodes = nodes.map((node) => {
-          const elkNode = layoutedGraph.children?.find((n) => n.id === node.id);
-          if (elkNode) {
-            return {
-              ...node,
-              position: {
-                x: elkNode.x || 0,
-                y: elkNode.y || 0,
-              },
-            };
-          }
-          return node;
-        });
-
-        return { nodes: layoutedNodes, edges };
+    return elk.layout(elkGraph).then((layoutedGraph) => {
+      // Apply layout changes to the nodes
+      const layoutedNodes = nodes.map((node) => {
+        const elkNode = layoutedGraph.children?.find((n) => n.id === node.id);
+        if (elkNode) {
+          return {
+            ...node,
+            position: {
+              x: elkNode.x || 0,
+              y: elkNode.y || 0,
+            },
+          };
+        }
+        return node;
       });
-    },
-    [elkOptions]
-  );
+
+      return { nodes: layoutedNodes, edges };
+    });
+  }, []);
 
   // Run layout on initial render
   useEffect(() => {

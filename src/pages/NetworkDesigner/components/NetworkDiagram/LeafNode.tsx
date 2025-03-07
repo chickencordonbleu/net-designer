@@ -20,16 +20,16 @@ export function LeafNode({ data }: Props) {
           <div className="text-xs font-semibold">{data.label}</div>
         </div>
         <div className="text-xs">
-          {data.downlinks && (
-            <div className="flex items-center">
-              <span className="w-20">Downlinks:</span>
-              <span>{data.downlinks}</span>
-            </div>
-          )}
           {data.uplinks && (
             <div className="flex items-center">
               <span className="w-20">Uplinks:</span>
               <span>{data.uplinks}</span>
+            </div>
+          )}
+          {data.downlinks && (
+            <div className="flex items-center">
+              <span className="w-20">Downlinks:</span>
+              <span>{data.downlinks}</span>
             </div>
           )}
           {data.ports && (

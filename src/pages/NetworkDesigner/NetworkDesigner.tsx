@@ -8,7 +8,7 @@ import { NetworkStats } from "./components/NetworkStats/NetworkStats";
 
 export function NetworkDesigner() {
   const [serverConfig, setServerConfig] = useState<ServerConfig>({
-    servers: 2,
+    servers: 10,
     frontendNetwork: {
       networkType: "spine-leaf",
       oversubscriptionRatio: "1:1",
