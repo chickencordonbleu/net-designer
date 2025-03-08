@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { generateNetworkDesign } from "./serverDesign.helpers";
-import { ServerConfig } from "../types/serverConfig.types";
+import { ServerConfig } from "@/entities/networkProjects";
 
 describe("generateNetworkDesign", () => {
   it("should generate correct number of servers", () => {

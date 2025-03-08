@@ -25,26 +25,29 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Network, Server } from "lucide-react";
-import { ServerConfig } from "../types/serverConfig.types";
 import { OVERSUBSCRIPTION_RATIOS, PORT_SPEEDS } from "../constants/constants";
 import { Separator } from "@/components/ui/separator";
+import { useUpdateNetworkProject } from "@/entities/networkProjects";
+import {
+  NetworkProject,
+  UpdateNetworkProjectType,
+} from "@/entities/networkProjects/types";
 
 interface NetworkDesignerFormProps {
-  values: ServerConfig;
-  onSubmit: (data: ServerConfig) => void;
+  networkProject: NetworkProject;
 }
 
 export function NetworkDesignerForm({
-  values,
-  onSubmit,
+  networkProject,
 }: NetworkDesignerFormProps) {
-  const form = useForm<ServerConfig>({
-    defaultValues: values,
+  const updateProject = useUpdateNetworkProject();
+  const form = useForm<NetworkProject>({
+    defaultValues: networkProject,
   });
 
-  const handleSubmit = (data: ServerConfig) => {
-    onSubmit(data);
-    toast.success("Network design generated!");
+  const handleSubmit = (formValues: UpdateNetworkProjectType) => {
+    updateProject.mutate(formValues);
+    toast.success("Saved!");
   };
 
   return (
@@ -245,7 +248,7 @@ export function NetworkDesignerForm({
               )}
             />
             <Button type="submit" className="w-full">
-              Generate Network Design
+              Save Changes
             </Button>
           </form>
         </Form>

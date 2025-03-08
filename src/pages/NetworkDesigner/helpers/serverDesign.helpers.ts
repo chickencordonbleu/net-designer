@@ -1,4 +1,4 @@
-import { ServerConfig } from "../types/serverConfig.types";
+import { ServerConfig } from "@/entities/networkProjects";
 import { NetworkDesign, CISCO_SWITCH } from "../types/serverDesign.types";
 
 export const generateNetworkDesign = (
@@ -120,7 +120,7 @@ export const generateNetworkDesign = (
     design.servers.forEach((server, serverIndex) => {
       const networkInfo = server.networks.find((n) => n.name === network.name);
       if (networkInfo) {
-        networkInfo.ports.forEach((port, portIndex) => {
+        networkInfo.ports.forEach((_, portIndex) => {
           // Distribute connections across different leaf switches for redundancy
           const targetLeafIndex = (serverIndex + portIndex) % numLeafSwitches;
           const targetLeaf = design.leafSwitches.find(

@@ -22,7 +22,7 @@ const data = {
   projects: [
     {
       name: "Network Designer",
-      url: "#",
+      url: "",
       icon: Workflow,
       isActive: true,
     },
