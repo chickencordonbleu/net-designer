@@ -16,11 +16,6 @@
 ## Improvements
 
 1. Make is easier to differentiate between networks in the diagram.
-2. Fix the missing connections.
-3. Ports per server. The server has n ports per config. Round robin connections ordered by number leaf-1, leaf-2....
-4. Drive connections by servers.
-5. See where the server is plugged in. Server 1 port one is connected to leaf 1 port 1.
-6. Split the networks better.
-7. Leafs need to show connections from server.
-8. Make the dialogs bigger.
-9. Port level
+2. Split the networks better.
+3. Make the dialogs bigger.
+4. Port level

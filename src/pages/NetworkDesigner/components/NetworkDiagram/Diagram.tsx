@@ -114,8 +114,11 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
           uplinks: "",
           ports: "",
           network,
-          connections: networkDesign.connections.filter(
+          fromConnections: networkDesign.connections.filter(
             (c) => c.source === leaf.id
+          ),
+          toConnections: networkDesign.connections.filter(
+            (c) => c.target === leaf.id
           ),
         };
 

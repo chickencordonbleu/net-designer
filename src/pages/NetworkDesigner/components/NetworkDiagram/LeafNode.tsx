@@ -15,7 +15,8 @@ interface Props {
     downlinks: string;
     uplinks: string;
     ports: string;
-    connections: NetworkConnection[];
+    fromConnections: NetworkConnection[];
+    toConnections: NetworkConnection[];
   };
 }
 
@@ -39,7 +40,8 @@ export function LeafNode({ data }: Props) {
           downlinks={data.downlinks}
           uplinks={data.uplinks}
           ports={data.ports}
-          connections={data.connections}
+          fromConnections={data.fromConnections}
+          toConnections={data.toConnections}
         />
       </NodeHeader>
       <div className="text-xs pt-2">

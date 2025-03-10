@@ -14,11 +14,13 @@ interface LeafNodeDialogProps {
   uplinks?: string;
   ports?: string;
   network?: string;
-  connections: NetworkConnection[];
+  toConnections: NetworkConnection[];
+  fromConnections: NetworkConnection[];
 }
 
 export default function LeafNodeDialog({
-  connections,
+  toConnections,
+  fromConnections,
   label,
   downlinks,
   uplinks,
@@ -169,8 +171,8 @@ export default function LeafNodeDialog({
           {/* Port Connections Section */}
           <div>
             <h3 className="text-sm font-medium mb-3">
-              Port Connections{" "}
-              {connections?.length > 0 ? `(${connections.length})` : ""}
+              Port Connections From Servers{" "}
+              {toConnections?.length > 0 ? `(${toConnections.length})` : ""}
             </h3>
             <div className="rounded-md border overflow-hidden">
               <div className="max-h-[250px] overflow-y-auto">
@@ -189,8 +191,84 @@ export default function LeafNodeDialog({
                     </tr>
                   </thead>
                   <tbody>
-                    {connections && connections.length > 0 ? (
-                      connections.map((conn, index) => (
+                    {toConnections && toConnections.length > 0 ? (
+                      toConnections.map((conn, index) => (
+                        <tr
+                          key={index}
+                          className="hover:bg-muted/30 border-b last:border-b-0"
+                        >
+                          <td className="text-xs p-2">
+                            <div className="font-medium truncate max-w-[100px]">
+                              {conn.source}
+                            </div>
+                            <div className="text-muted-foreground mt-0.5">
+                              {conn.sourcePort || "Port N/A"}
+                            </div>
+                          </td>
+                          <td className="text-xs p-2">
+                            <div className="font-medium truncate max-w-[100px]">
+                              {conn.target}
+                            </div>
+                            <div className="text-muted-foreground mt-0.5">
+                              {conn.targetPort || "Port N/A"}
+                            </div>
+                          </td>
+                          <td className="text-xs p-2 text-right">
+                            <div
+                              className={`font-medium ${getConnectionColorClasses(
+                                conn.network
+                              )}`}
+                            >
+                              {conn.network
+                                ? conn.network.toUpperCase()
+                                : "DEFAULT"}
+                            </div>
+                            <div className="font-mono text-muted-foreground text-[10px] mt-0.5">
+                              {conn.speed}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={3}
+                          className="text-center text-xs text-muted-foreground p-4"
+                        >
+                          No connections found for this leaf switch
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-medium mb-3">
+              Port Connections To Spine Switches{" "}
+              {fromConnections?.length > 0 ? `(${fromConnections.length})` : ""}
+            </h3>
+            <div className="rounded-md border overflow-hidden">
+              <div className="max-h-[250px] overflow-y-auto">
+                <table className="w-full">
+                  <thead className="sticky top-0 z-10">
+                    <tr className="bg-card">
+                      <th className="text-xs font-medium text-left p-2 border-b">
+                        From
+                      </th>
+                      <th className="text-xs font-medium text-left p-2 border-b">
+                        To
+                      </th>
+                      <th className="text-xs font-medium text-right p-2 border-b">
+                        Network
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {fromConnections && fromConnections.length > 0 ? (
+                      fromConnections.map((conn, index) => (
                         <tr
                           key={index}
                           className="hover:bg-muted/30 border-b last:border-b-0"
