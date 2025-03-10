@@ -81,7 +81,7 @@ export function NetworkStats({ networkDesign }: NetworkStatsProps) {
             value={networkStats.connections}
           />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <BarStat
             title="Network Distribution"
             icon={<Activity className="mr-2 h-4 w-4" />}

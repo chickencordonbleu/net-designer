@@ -3,13 +3,12 @@ import {
   NodeHeader,
   NodeHeaderIcon,
   NodeHeaderTitle,
-  NodeHeaderActions,
-  NodeHeaderInfoAction,
 } from "@/components/node-header";
 
 import { Handle, Position } from "@xyflow/react";
 import { Server } from "lucide-react";
 import ServerNodeDialog from "./ServerNodeDialog";
+import { NetworkConnection } from "../../types/serverDesign.types";
 
 interface Props {
   data: {
@@ -19,6 +18,7 @@ interface Props {
       ports: string;
       speed: string;
     }>;
+    connections: NetworkConnection[];
   };
 }
 
@@ -31,7 +31,11 @@ export function ServerNode({ data }: Props) {
             <Server className="mr-1" size={16} />
           </NodeHeaderIcon>
           <NodeHeaderTitle>Server</NodeHeaderTitle>
-          <ServerNodeDialog label={data.label} networks={data.networks} />
+          <ServerNodeDialog
+            label={data.label}
+            networks={data.networks}
+            connections={data.connections}
+          />
         </NodeHeader>
         <div className="text-xs text-gray-300 pt-2">
           <div className="flex justify-between">

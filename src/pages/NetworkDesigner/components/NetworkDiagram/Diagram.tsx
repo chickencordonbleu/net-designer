@@ -87,6 +87,9 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
             label: spine.id,
             downlinks: `${spine.downlinks.length} x ${spine.downlinks[0].speed}`,
             network,
+            connections: networkDesign.connections.filter(
+              (c) => c.target === spine.id
+            ),
           },
           position: { x: 0, y: 0 }, // Initial position will be set by ELK
         });
@@ -111,6 +114,9 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
           uplinks: "",
           ports: "",
           network,
+          connections: networkDesign.connections.filter(
+            (c) => c.source === leaf.id
+          ),
         };
 
         if (leaf.downlinks && leaf.uplinks) {
@@ -150,6 +156,9 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
         data: {
           label: server.id,
           networks: networkData,
+          connections: networkDesign.connections.filter(
+            (c) => c.source === server.id
+          ),
         },
         position: { x: 0, y: 0 }, // Initial position will be set by ELK
       });

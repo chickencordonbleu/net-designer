@@ -3,11 +3,11 @@ import {
   NodeHeader,
   NodeHeaderIcon,
   NodeHeaderTitle,
-  NodeHeaderActions,
-  NodeHeaderInfoAction,
 } from "@/components/node-header";
 import { Handle, Position } from "@xyflow/react";
 import { Leaf } from "lucide-react";
+import LeafNodeDialog from "./LeafNodeDialog";
+import { NetworkConnection } from "../../types/serverDesign.types";
 
 interface Props {
   data: {
@@ -15,6 +15,7 @@ interface Props {
     downlinks: string;
     uplinks: string;
     ports: string;
+    connections: NetworkConnection[];
   };
 }
 
@@ -27,9 +28,13 @@ export function LeafNode({ data }: Props) {
           <Leaf className="mr-1" size={16} />
         </NodeHeaderIcon>
         <NodeHeaderTitle>Leaf</NodeHeaderTitle>
-        <NodeHeaderActions>
-          <NodeHeaderInfoAction />
-        </NodeHeaderActions>
+        <LeafNodeDialog
+          label={data.label}
+          downlinks={data.downlinks}
+          uplinks={data.uplinks}
+          ports={data.ports}
+          connections={data.connections}
+        />
       </NodeHeader>
       <div className="text-xs pt-2">
         <div className="flex justify-between">

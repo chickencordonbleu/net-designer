@@ -28,12 +28,12 @@ export function NetworkDesigner() {
   return (
     <div className="grid grid-cols-3 gap-6 h-full overflow-auto p-6">
       <NetworkDiagram networkDesign={networkDesign} />
+      <NetworkStats networkDesign={networkDesign} />
       <NetworkDesignerForm networkProject={networkProject} />
       <YamlSnipper
         networkProject={networkProject}
         networkDesign={networkDesign}
       />
-      <NetworkStats networkDesign={networkDesign} />
     </div>
   );
 }

@@ -6,11 +6,14 @@ import {
 } from "@/components/node-header";
 import { Handle, Position } from "@xyflow/react";
 import { Network } from "lucide-react";
+import { NetworkConnection } from "../../types/serverDesign.types";
+import SpineNodeDialog from "./SpineNodeDialog";
 
 interface Props {
   data: {
     label: string;
     downlinks: string;
+    connections: NetworkConnection[];
   };
 }
 
@@ -22,6 +25,11 @@ export function SpineNode({ data }: Props) {
           <Network className="mr-1" size={16} />
         </NodeHeaderIcon>
         <NodeHeaderTitle>Spine</NodeHeaderTitle>
+        <SpineNodeDialog
+          label={data.label}
+          downlinks={data.downlinks}
+          connections={data.connections}
+        />
       </NodeHeader>
       <div className="text-xs pt-2">
         <div className="flex justify-between">

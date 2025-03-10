@@ -27,7 +27,7 @@ interface SpineSwitch {
   downlinks: Port[];
 }
 
-interface Connection {
+export interface NetworkConnection {
   id: string;
   source: string;
   sourcePort: string;
@@ -41,7 +41,7 @@ export interface NetworkDesign {
   servers: Server[];
   leafSwitches: LeafSwitch[];
   spineSwitches: SpineSwitch[];
-  connections: Connection[];
+  connections: NetworkConnection[];
 }
 
 interface SwitchPort {
