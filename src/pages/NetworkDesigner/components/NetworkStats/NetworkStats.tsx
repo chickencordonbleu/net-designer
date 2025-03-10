@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { FileDigit, Server, Network, Cable } from "lucide-react";
+import { Server, Network, Cable, Plug, Leaf } from "lucide-react";
 import { NetworkDesign } from "../../types/serverDesign.types";
 import { NumberStat } from "./NumberStat";
 
@@ -53,13 +46,13 @@ export function NetworkStats({ networkDesign }: NetworkStatsProps) {
       />
       <NumberStat
         icon={<Network className="mr-1 h-4 w-4" />}
-        label="Leaf Switches"
-        value={networkStats.leaves}
-      />
-      <NumberStat
-        icon={<Network className="mr-1 h-4 w-4" />}
         label="Spine Switches"
         value={networkStats.spines}
+      />
+      <NumberStat
+        icon={<Leaf className="mr-1 h-4 w-4" />}
+        label="Leaf Switches"
+        value={networkStats.leaves}
       />
       <NumberStat
         icon={<Cable className="mr-1 h-4 w-4" />}
@@ -67,7 +60,7 @@ export function NetworkStats({ networkDesign }: NetworkStatsProps) {
         value={networkStats.connections}
       />
       <NumberStat
-        icon={<Cable className="mr-1 h-4 w-4" />}
+        icon={<Plug className="mr-1 h-4 w-4" />}
         label="SFPs"
         value={(networkStats.connections ?? 0) * 2}
       />

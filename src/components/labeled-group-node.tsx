@@ -1,4 +1,4 @@
-import React, { forwardRef, HTMLAttributes, ReactNode } from "react";
+import { forwardRef, HTMLAttributes, ReactNode } from "react";
 import { NodeProps, Panel, PanelPosition } from "@xyflow/react";
 import { BaseNode } from "@/components/base-node";
 import { cn } from "@/lib/utils";
@@ -13,15 +13,15 @@ export const GroupNodeLabel = forwardRef<HTMLDivElement, GroupNodeLabelProps>(
       <div ref={ref} className="h-full w-full" {...props}>
         <div
           className={cn(
-            "w-fit bg-gray-200 bg-secondary p-2 text-xs text-card-foreground",
-            className,
+            "w-fit bg-gray-200 p-2 text-xs text-card-foreground",
+            className
           )}
         >
           {children}
         </div>
       </div>
     );
-  },
+  }
 );
 
 GroupNodeLabel.displayName = "GroupNodeLabel";
@@ -70,7 +70,7 @@ export const GroupNode = forwardRef<HTMLDivElement, GroupNodeProps>(
         </Panel>
       </BaseNode>
     );
-  },
+  }
 );
 
 GroupNode.displayName = "GroupNode";

@@ -25,7 +25,7 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Network, Server } from "lucide-react";
-import { OVERSUBSCRIPTION_RATIOS, PORT_SPEEDS } from "../constants/constants";
+import { PORT_SPEEDS } from "../constants/constants";
 import { Separator } from "@/components/ui/separator";
 import { useUpdateNetworkProject } from "@/entities/networkProjects";
 import {

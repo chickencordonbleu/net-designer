@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, HTMLAttributes, ReactNode } from "react";
 import { useNodeId, useReactFlow } from "@xyflow/react";
-import { EllipsisVertical, Info, Trash } from "lucide-react";
+import { EllipsisVertical, Info } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Slot } from "@radix-ui/react-slot";

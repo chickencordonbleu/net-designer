@@ -120,7 +120,7 @@ export const generateNetworkDesign = (
     design.servers.forEach((server, serverIndex) => {
       const networkInfo = server.networks.find((n) => n.name === network.name);
       if (networkInfo) {
-        networkInfo.ports.forEach((port, portIndex) => {
+        networkInfo.ports.forEach((_, portIndex) => {
           // Start with round robin leaf switch assignment
           const initialLeafIndex = portIndex % numLeafSwitches;
           let connected = false;
