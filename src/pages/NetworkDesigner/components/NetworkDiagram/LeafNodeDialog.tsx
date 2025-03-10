@@ -6,13 +6,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Info } from "lucide-react";
-import { NetworkConnection } from "../../types/serverDesign.types";
+import { NetworkConnection, NetworkPort } from "../../types/serverDesign.types";
 
 interface LeafNodeDialogProps {
   label: string;
-  downlinks?: string;
-  uplinks?: string;
-  ports?: string;
+  downlinks?: NetworkPort[];
+  uplinks?: NetworkPort[];
   network?: string;
   toConnections: NetworkConnection[];
   fromConnections: NetworkConnection[];
@@ -24,7 +23,6 @@ export default function LeafNodeDialog({
   label,
   downlinks,
   uplinks,
-  ports,
   network,
 }: LeafNodeDialogProps) {
   // Helper function to get color classes based on network type
@@ -58,29 +56,18 @@ export default function LeafNodeDialog({
   const interfaces = [];
 
   if (uplinks) {
-    const [count, speed] = uplinks.split(" x ");
     interfaces.push({
       name: "Uplinks",
-      ports: count,
-      speed: speed,
+      ports: uplinks,
+      speed: uplinks[0].speed,
     });
   }
 
   if (downlinks) {
-    const [count, speed] = downlinks.split(" x ");
     interfaces.push({
       name: "Downlinks",
-      ports: count,
-      speed: speed,
-    });
-  }
-
-  if (ports) {
-    const [count, speed] = ports.split(" x ");
-    interfaces.push({
-      name: "Ports",
-      ports: count,
-      speed: speed,
+      ports: downlinks,
+      speed: downlinks[0].speed,
     });
   }
 
@@ -149,7 +136,9 @@ export default function LeafNodeDialog({
                       <td className="text-xs p-2 font-medium capitalize">
                         {intf.name}
                       </td>
-                      <td className="text-xs p-2 text-right">{intf.ports}</td>
+                      <td className="text-xs p-2 text-right">
+                        {intf.ports.length}
+                      </td>
                       <td className="text-xs p-2 text-right">{intf.speed}</td>
                     </tr>
                   ))}

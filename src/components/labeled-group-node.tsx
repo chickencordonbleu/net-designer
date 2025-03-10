@@ -13,7 +13,7 @@ export const GroupNodeLabel = forwardRef<HTMLDivElement, GroupNodeLabelProps>(
       <div ref={ref} className="h-full w-full" {...props}>
         <div
           className={cn(
-            "w-fit bg-gray-200 p-2 text-xs text-card-foreground",
+            "w-fit bg-secondary p-2 text-xs text-card-foreground",
             className
           )}
         >

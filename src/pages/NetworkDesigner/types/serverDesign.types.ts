@@ -1,11 +1,11 @@
-interface Port {
+export interface NetworkPort {
   id: string;
   speed: string;
 }
 
 interface ServerNetwork {
   name: string;
-  ports: Port[];
+  ports: NetworkPort[];
 }
 
 interface Server {
@@ -16,15 +16,14 @@ interface Server {
 export interface LeafSwitch {
   id: string;
   network: string;
-  downlinks?: Port[];
-  uplinks?: Port[];
-  ports?: Port[];
+  downlinks?: NetworkPort[];
+  uplinks?: NetworkPort[];
 }
 
 interface SpineSwitch {
   id: string;
   network: string;
-  downlinks: Port[];
+  downlinks: NetworkPort[];
 }
 
 export interface NetworkConnection {

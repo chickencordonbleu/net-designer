@@ -6,11 +6,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Info } from "lucide-react";
-import { NetworkConnection } from "../../types/serverDesign.types";
+import { NetworkConnection, NetworkPort } from "../../types/serverDesign.types";
 
 interface SpineNodeDialogProps {
   label: string;
-  downlinks?: string;
+  downlinks: NetworkPort[];
   network?: string;
   connections: NetworkConnection[];
 }
@@ -52,11 +52,10 @@ export default function SpineNodeDialog({
   const interfaces = [];
 
   if (downlinks) {
-    const [count, speed] = downlinks.split(" x ");
     interfaces.push({
       name: "Downlinks",
-      ports: count,
-      speed: speed,
+      ports: downlinks,
+      speed: downlinks[0].speed,
     });
   }
 
@@ -125,7 +124,9 @@ export default function SpineNodeDialog({
                       <td className="text-xs p-2 font-medium capitalize">
                         {intf.name}
                       </td>
-                      <td className="text-xs p-2 text-right">{intf.ports}</td>
+                      <td className="text-xs p-2 text-right">
+                        {intf.ports.length}
+                      </td>
                       <td className="text-xs p-2 text-right">{intf.speed}</td>
                     </tr>
                   ))}

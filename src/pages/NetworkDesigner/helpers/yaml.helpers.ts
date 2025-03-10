@@ -59,8 +59,6 @@ export const generateYamlConfig = (
         if (leaf.downlinks && leaf.uplinks) {
           yaml += `      downlinks: ${leaf.downlinks.length} x ${leaf.downlinks[0].speed}\n`;
           yaml += `      uplinks: ${leaf.uplinks.length} x ${leaf.uplinks[0].speed}\n`;
-        } else if (leaf.ports) {
-          yaml += `      ports: ${leaf.ports.length} x ${leaf.ports[0].speed}\n`;
         }
       });
     }

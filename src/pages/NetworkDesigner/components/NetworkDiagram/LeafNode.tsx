@@ -4,17 +4,19 @@ import {
   NodeHeaderIcon,
   NodeHeaderTitle,
 } from "@/components/node-header";
-import { Handle, Position } from "@xyflow/react";
-import { Leaf } from "lucide-react";
+import { Leaf, Plus } from "lucide-react";
 import LeafNodeDialog from "./LeafNodeDialog";
-import { NetworkConnection } from "../../types/serverDesign.types";
+import { NetworkConnection, NetworkPort } from "../../types/serverDesign.types";
+import { ButtonHandle } from "@/components/button-handle";
+import { Button } from "@/components/ui/button";
+import { Position } from "@xyflow/react";
 
 interface Props {
   data: {
+    id: string;
     label: string;
-    downlinks: string;
-    uplinks: string;
-    ports: string;
+    downlinks: NetworkPort[];
+    uplinks: NetworkPort[];
     fromConnections: NetworkConnection[];
     toConnections: NetworkConnection[];
   };
@@ -22,14 +24,10 @@ interface Props {
 
 export function LeafNode({ data }: Props) {
   return (
-    <BaseNode className="px-3 py-2 bg-purple-500 border-purple-600 w-48 text-white">
-      <Handle type="source" position={Position.Top} id="a" />
-      <Handle type="source" position={Position.Left} id="b" />
-      <Handle type="source" position={Position.Right} id="c" />
-      <Handle type="source" position={Position.Bottom} id="d" />
-      <Handle type="source" position={Position.Top} id="e" />
-      <Handle type="source" position={Position.Top} id="f" />
-      <Handle type="source" position={Position.Top} id="g" />
+    <BaseNode
+      id={data.id}
+      className="px-3 py-2 bg-purple-500 border-purple-600 w-[500px] text-white"
+    >
       <NodeHeader className="-mx-3 -mt-2 border-b border-purple-400">
         <NodeHeaderIcon>
           <Leaf className="mr-1" size={16} />
@@ -39,7 +37,6 @@ export function LeafNode({ data }: Props) {
           label={data.label}
           downlinks={data.downlinks}
           uplinks={data.uplinks}
-          ports={data.ports}
           fromConnections={data.fromConnections}
           toConnections={data.toConnections}
         />
@@ -52,23 +49,60 @@ export function LeafNode({ data }: Props) {
         {data.uplinks && (
           <div className="flex justify-between">
             <span className="w-20">Uplinks:</span>
-            <span>{data.uplinks}</span>
+            <span>{data.uplinks.length}</span>
           </div>
         )}
         {data.downlinks && (
           <div className="flex justify-between">
             <span className="w-20">Downlinks:</span>
-            <span>{data.downlinks}</span>
-          </div>
-        )}
-        {data.ports && (
-          <div className="flex justify-between">
-            <span className="w-20">Ports:</span>
-            <span>{data.ports}</span>
+            <span>{data.downlinks.length}</span>
           </div>
         )}
       </div>
-      <Handle type="target" position={Position.Bottom} />
+      {data.uplinks.map((port, index) => (
+        <ButtonHandle
+          key={port.id}
+          type="source"
+          position={Position.Top}
+          id={port.id}
+          showButton={false}
+          style={{
+            top: 0,
+            left: `${
+              data.uplinks.length === 1
+                ? 50
+                : (index * 100) / (data.uplinks.length - 1)
+            }%`,
+            right: "auto",
+            bottom: "auto",
+          }}
+        >
+          <Button size="sm" variant="secondary" className="rounded-full">
+            <Plus size={10} />
+          </Button>
+        </ButtonHandle>
+      ))}
+      {data.downlinks.map((port, index) => (
+        <ButtonHandle
+          key={port.id}
+          type="target"
+          position={Position.Bottom}
+          id={port.id}
+          showButton={false}
+          style={{
+            left: `${
+              data.downlinks.length === 1
+                ? 50
+                : (index * 100) / (data.downlinks.length - 1)
+            }%`,
+            right: "auto",
+          }}
+        >
+          <Button size="sm" variant="secondary" className="rounded-full">
+            <Plus size={10} />
+          </Button>
+        </ButtonHandle>
+      ))}
     </BaseNode>
   );
 }

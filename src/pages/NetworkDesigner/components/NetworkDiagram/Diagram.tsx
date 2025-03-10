@@ -14,13 +14,13 @@ import {
 } from "@xyflow/react";
 import { NetworkDesign } from "../../types/serverDesign.types";
 import "@xyflow/react/dist/style.css";
-import { ServerNode } from "./ServerNode";
 import { LeafNode } from "./LeafNode";
 import { SpineNode } from "./SpineNode";
 import { DownloadDiagram } from "./DownloadDiagram";
 import { useTheme } from "@/components/theme-provider";
 import ELK from "elkjs/lib/elk.bundled.js";
 import { LabeledGroupNodeDemo } from "./LabeledGroupNodeDemo";
+import { ServerNode } from "./ServerNode";
 
 const nodeTypes: NodeTypes = {
   server: ServerNode,
@@ -39,8 +39,8 @@ const elk = new ELK();
 // ELK layout options
 const elkOptions = {
   "elk.algorithm": "layered",
-  "elk.layered.spacing.nodeNodeBetweenLayers": "150",
-  "elk.spacing.nodeNode": "80",
+  "elk.layered.spacing.nodeNodeBetweenLayers": "250",
+  "elk.spacing.nodeNode": "500",
   "elk.direction": "UP",
   "elk.layered.crossingMinimization.strategy": "LAYER_SWEEP",
   "elk.layered.nodePlacement.strategy": "NETWORK_SIMPLEX",
@@ -84,8 +84,9 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
           id: spine.id,
           type: "spine",
           data: {
+            id: spine.id,
             label: spine.id,
-            downlinks: `${spine.downlinks.length} x ${spine.downlinks[0].speed}`,
+            downlinks: spine.downlinks,
             network,
             connections: networkDesign.connections.filter(
               (c) => c.target === spine.id
@@ -110,9 +111,8 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
       leaves.forEach((leaf) => {
         const nodeData = {
           label: leaf.id,
-          downlinks: "",
-          uplinks: "",
-          ports: "",
+          downlinks: leaf.downlinks,
+          uplinks: leaf.uplinks,
           network,
           fromConnections: networkDesign.connections.filter(
             (c) => c.source === leaf.id
@@ -121,13 +121,6 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
             (c) => c.target === leaf.id
           ),
         };
-
-        if (leaf.downlinks && leaf.uplinks) {
-          nodeData.downlinks = `${leaf.downlinks.length} x ${leaf.downlinks[0].speed}`;
-          nodeData.uplinks = `${leaf.uplinks.length} x ${leaf.uplinks[0].speed}`;
-        } else if (leaf.ports) {
-          nodeData.ports = `${leaf.ports.length} x ${leaf.ports[0].speed}`;
-        }
 
         result.push({
           id: leaf.id,
@@ -149,14 +142,14 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
     networkDesign.servers.forEach((server) => {
       const networkData = server.networks.map((n) => ({
         name: n.name,
-        ports: n.ports.length,
-        speed: n.ports[0].speed,
+        ports: n.ports,
       }));
 
       result.push({
         id: server.id,
         type: "server",
         data: {
+          id: server.id,
           label: server.id,
           networks: networkData,
           connections: networkDesign.connections.filter(
@@ -201,7 +194,7 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
         style: {
           backgroundColor: "rgba(236, 72, 153, 0.1)",
           borderColor: "#ec4899",
-          width: 500, // Will be adjusted after layout
+          width: 1000, // Will be adjusted after layout
           height: 500, // Will be adjusted after layout
         },
       });
@@ -241,16 +234,18 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
         id: conn.id,
         source: conn.source,
         target: conn.target,
+        sourceHandle: conn.sourcePort,
+        targetHandle: conn.targetPort,
         animated: true,
         style: edgeStyle,
+        label: `${conn.speed} x ${numConnections}`,
+        labelBgStyle: labelBgStyle,
+        labelStyle: labelStyle,
         data: {
           speed: conn.speed,
           network: conn.network,
         },
-        label: `${conn.speed} x ${numConnections}`,
-        labelBgStyle: labelBgStyle,
-        labelStyle: labelStyle,
-      };
+      } satisfies Edge;
     });
   }, [networkDesign, isDarkMode]);
 
@@ -319,7 +314,7 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
 
           const positions = childNodes.map((n) => n.position);
           const minX = Math.min(...positions.map((p) => p.x)) - 10;
-          const maxX = Math.max(...positions.map((p) => p.x + 180)) + 60;
+          const maxX = Math.max(...positions.map((p) => p.x + 500)) + 10;
           const minY = Math.min(...positions.map((p) => p.y)) - 60;
           const maxY = Math.max(...positions.map((p) => p.y + 70)) + 70;
 

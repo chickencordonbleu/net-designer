@@ -6,14 +6,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Info } from "lucide-react";
-import { NetworkConnection } from "../../types/serverDesign.types";
+import { NetworkConnection, NetworkPort } from "../../types/serverDesign.types";
 
 interface ServerNodeDialogProps {
   label: string;
   networks: Array<{
     name: string;
-    ports: string;
-    speed: string;
+    ports: NetworkPort[];
   }>;
   connections: NetworkConnection[];
 }
@@ -92,8 +91,12 @@ export default function ServerNodeDialog({
                       <td className="text-xs p-2 font-medium capitalize">
                         {net.name}
                       </td>
-                      <td className="text-xs p-2 text-right">{net.ports}</td>
-                      <td className="text-xs p-2 text-right">{net.speed}</td>
+                      <td className="text-xs p-2 text-right">
+                        {net.ports.length}
+                      </td>
+                      <td className="text-xs p-2 text-right">
+                        {net.ports[0].speed}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -5,18 +5,20 @@ import {
   NodeHeaderTitle,
 } from "@/components/node-header";
 
-import { Handle, Position } from "@xyflow/react";
-import { Server } from "lucide-react";
+import { Position } from "@xyflow/react";
+import { Plus, Server } from "lucide-react";
 import ServerNodeDialog from "./ServerNodeDialog";
-import { NetworkConnection } from "../../types/serverDesign.types";
+import { NetworkConnection, NetworkPort } from "../../types/serverDesign.types";
+import { ButtonHandle } from "@/components/button-handle";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   data: {
+    id: string;
     label: string;
     networks: Array<{
       name: string;
-      ports: string;
-      speed: string;
+      ports: NetworkPort[];
     }>;
     connections: NetworkConnection[];
   };
@@ -25,7 +27,10 @@ interface Props {
 export function ServerNode({ data }: Props) {
   return (
     <>
-      <BaseNode className="px-3 py-2 bg-gray-700 border-gray-600 w-44 text-white">
+      <BaseNode
+        id={data.id}
+        className="px-3 py-2 bg-gray-700 border-gray-600 w-[500px] text-white"
+      >
         <NodeHeader className="-mx-3 -mt-2 border-b border-gray-400">
           <NodeHeaderIcon>
             <Server className="mr-1" size={16} />
@@ -46,12 +51,37 @@ export function ServerNode({ data }: Props) {
             <div key={net.name} className="flex justify-between">
               <span className="w-16">{net.name.toUpperCase()}:</span>
               <span>
-                {net.ports} x {net.speed}
+                {net.ports.length} x {net.ports[0].speed}
               </span>
             </div>
           ))}
         </div>
-        <Handle type="source" position={Position.Top} id="a" />
+        {[...data.networks.map((net) => net.ports).flat()].map(
+          (port, index) => (
+            <ButtonHandle
+              key={port.id}
+              type="source"
+              position={Position.Top}
+              id={port.id}
+              style={{
+                top: 0,
+                left: `${
+                  data.networks.map((net) => net.ports).flat().length === 1
+                    ? 50
+                    : (index * 100) /
+                      (data.networks.map((net) => net.ports).flat().length - 1)
+                }%`,
+                right: "auto",
+                bottom: "auto",
+              }}
+              showButton={false}
+            >
+              <Button size="sm" variant="secondary" className="rounded-full">
+                <Plus size={10} />
+              </Button>
+            </ButtonHandle>
+          )
+        )}
       </BaseNode>
     </>
   );

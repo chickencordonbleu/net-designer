@@ -19,3 +19,4 @@
 2. Split the networks better.
 3. Make the dialogs bigger.
 4. Port level
+5. Show server, when click on port show connected to.

@@ -348,4 +348,172 @@ describe("Spine-Leaf Network Design Rules", () => {
       });
     });
   });
+
+  describe("Spine-Leaf Port Numbering", () => {
+    it("should start port numbering from 1 for each network type", () => {
+      const config: ServerConfig = {
+        servers: 4,
+        frontendNetwork: {
+          networkType: "spine-leaf",
+          oversubscriptionRatio: "1:1",
+          nicPorts: 2,
+          portSpeed: "40G",
+        },
+        gpuNetwork: {
+          networkType: "spine-leaf",
+          oversubscriptionRatio: "1:1",
+          nicPorts: 2,
+          portSpeed: "100G",
+        },
+      };
+
+      const design = generateNetworkDesign(config);
+
+      // Check frontend network port numbering
+      const frontendSpineConns = design.connections.filter(
+        (conn) =>
+          conn.network === "frontend" &&
+          design.spineSwitches.some((s) => s.id === conn.target)
+      );
+
+      const frontendPortNumbers = frontendSpineConns.map((conn) =>
+        parseInt(conn.targetPort.replace("downlink-", ""))
+      );
+      expect(Math.min(...frontendPortNumbers)).toBe(1);
+
+      // Check GPU network port numbering
+      const gpuSpineConns = design.connections.filter(
+        (conn) =>
+          conn.network === "gpu" &&
+          design.spineSwitches.some((s) => s.id === conn.target)
+      );
+
+      const gpuPortNumbers = gpuSpineConns.map((conn) =>
+        parseInt(conn.targetPort.replace("downlink-", ""))
+      );
+      expect(Math.min(...gpuPortNumbers)).toBe(1);
+    });
+
+    it("should not reuse the same port on a spine switch", () => {
+      const config: ServerConfig = {
+        servers: 4,
+        frontendNetwork: {
+          networkType: "spine-leaf",
+          oversubscriptionRatio: "1:1",
+          nicPorts: 2,
+          portSpeed: "40G",
+        },
+        gpuNetwork: {
+          networkType: "spine-leaf",
+          oversubscriptionRatio: "1:1",
+          nicPorts: 2,
+          portSpeed: "100G",
+        },
+      };
+
+      const design = generateNetworkDesign(config);
+
+      // Check for port uniqueness within each spine switch
+      design.spineSwitches.forEach((spine) => {
+        const spineConns = design.connections.filter(
+          (conn) => conn.target === spine.id
+        );
+        const usedPorts = spineConns.map((conn) => conn.targetPort);
+        const uniquePorts = new Set(usedPorts);
+        expect(usedPorts.length).toBe(uniquePorts.size);
+      });
+    });
+
+    it("should maintain consistent port numbering pattern across leaf switches", () => {
+      const config: ServerConfig = {
+        servers: 4,
+        frontendNetwork: {
+          networkType: "spine-leaf",
+          oversubscriptionRatio: "1:1",
+          nicPorts: 2,
+          portSpeed: "40G",
+        },
+        gpuNetwork: {
+          networkType: "spine-leaf",
+          oversubscriptionRatio: "1:1",
+          nicPorts: 2,
+          portSpeed: "100G",
+        },
+      };
+
+      const design = generateNetworkDesign(config);
+
+      ["frontend", "gpu"].forEach((networkName) => {
+        const networkSpines = design.spineSwitches.filter(
+          (s) => s.network === networkName
+        );
+        const networkLeaves = design.leafSwitches.filter(
+          (l) => l.network === networkName
+        );
+
+        networkSpines.forEach((spine) => {
+          const spineConns = design.connections.filter(
+            (conn) => conn.target === spine.id
+          );
+
+          // Check that port numbers increment consistently for each leaf
+          const portsByLeaf = new Map();
+          spineConns.forEach((conn) => {
+            const leafIndex = networkLeaves.findIndex(
+              (l) => l.id === conn.source
+            );
+            const portNum = parseInt(conn.targetPort.replace("downlink-", ""));
+
+            if (!portsByLeaf.has(leafIndex)) {
+              portsByLeaf.set(leafIndex, []);
+            }
+            portsByLeaf.get(leafIndex).push(portNum);
+          });
+
+          // Verify port numbers are sequential within each leaf's connections
+          portsByLeaf.forEach((ports) => {
+            ports.sort((a: number, b: number) => a - b);
+            for (let i = 1; i < ports.length; i++) {
+              expect(ports[i] - ports[i - 1]).toBe(1);
+            }
+          });
+        });
+      });
+    });
+
+    it("should handle maximum port capacity correctly", () => {
+      const config: ServerConfig = {
+        servers: 16, // Large number to test capacity limits
+        frontendNetwork: {
+          networkType: "spine-leaf",
+          oversubscriptionRatio: "1:1",
+          nicPorts: 4,
+          portSpeed: "40G",
+        },
+        gpuNetwork: {
+          networkType: "spine-leaf",
+          oversubscriptionRatio: "1:1",
+          nicPorts: 4,
+          portSpeed: "100G",
+        },
+      };
+
+      const design = generateNetworkDesign(config);
+
+      design.spineSwitches.forEach((spine) => {
+        const spineConns = design.connections.filter(
+          (conn) => conn.target === spine.id
+        );
+
+        // Check that we don't exceed the number of available downlink ports
+        expect(spineConns.length).toBeLessThanOrEqual(spine.downlinks.length);
+
+        // Verify port numbers don't exceed available ports
+        spineConns.forEach((conn) => {
+          const portNum = parseInt(conn.targetPort.replace("downlink-", ""));
+          expect(portNum).toBeLessThanOrEqual(spine.downlinks.length);
+        });
+      });
+    });
+  });
 });
