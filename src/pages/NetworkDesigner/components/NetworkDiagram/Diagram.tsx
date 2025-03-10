@@ -303,9 +303,9 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
 
           const positions = childNodes.map((n) => n.position);
           const minX = Math.min(...positions.map((p) => p.x)) - 10;
-          const maxX = Math.max(...positions.map((p) => p.x + 180)) + 50;
+          const maxX = Math.max(...positions.map((p) => p.x + 180)) + 60;
           const minY = Math.min(...positions.map((p) => p.y)) - 60;
-          const maxY = Math.max(...positions.map((p) => p.y + 70)) + 30;
+          const maxY = Math.max(...positions.map((p) => p.y + 70)) + 70;
 
           // Update group position and size
           return {

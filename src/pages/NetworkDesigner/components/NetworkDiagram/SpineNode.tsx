@@ -1,3 +1,9 @@
+import { BaseNode } from "@/components/base-node";
+import {
+  NodeHeader,
+  NodeHeaderIcon,
+  NodeHeaderTitle,
+} from "@/components/node-header";
 import { Handle, Position } from "@xyflow/react";
 import { Network } from "lucide-react";
 
@@ -10,20 +16,24 @@ interface Props {
 
 export function SpineNode({ data }: Props) {
   return (
-    <>
-      <div className="p-2 bg-blue-500 rounded-md border-2 border-blue-600 w-56 text-white shadow-md">
-        <div className="flex items-center justify-center mb-1">
+    <BaseNode className="px-3 py-2 bg-blue-500 border-blue-600 w-56 text-white">
+      <NodeHeader className="-mx-3 -mt-2 border-b border-blue-400">
+        <NodeHeaderIcon>
           <Network className="mr-1" size={16} />
-          <div className="text-xs font-semibold">{data.label}</div>
+        </NodeHeaderIcon>
+        <NodeHeaderTitle>Spine</NodeHeaderTitle>
+      </NodeHeader>
+      <div className="text-xs pt-2">
+        <div className="flex justify-between">
+          <span className="w-16">Name</span>
+          <span>{data.label}</span>
         </div>
-        <div className="text-xs">
-          <div className="flex items-center">
-            <span className="w-20">Downlinks:</span>
-            <span>{data.downlinks}</span>
-          </div>
+        <div className="flex items-center">
+          <span className="w-20">Downlinks:</span>
+          <span>{data.downlinks}</span>
         </div>
       </div>
       <Handle type="target" position={Position.Bottom} />
-    </>
+    </BaseNode>
   );
 }

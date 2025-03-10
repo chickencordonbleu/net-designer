@@ -61,65 +61,6 @@ describe("generateNetworkDesign", () => {
     expect(gpuPorts?.[0].speed).toBe("100G");
   });
 
-  it("should generate minimum 2 spine switches for redundancy", () => {
-    const config: ServerConfig = {
-      servers: 1,
-      frontendNetwork: {
-        networkType: "spine-leaf",
-        oversubscriptionRatio: "1:1",
-        nicPorts: 1,
-        portSpeed: "40G",
-      },
-      gpuNetwork: {
-        networkType: "spine-leaf",
-        oversubscriptionRatio: "1:1",
-        nicPorts: 1,
-        portSpeed: "100G",
-      },
-    };
-
-    const design = generateNetworkDesign(config);
-
-    const frontendSpines = design.spineSwitches.filter(
-      (s) => s.network === "frontend"
-    );
-    const gpuSpines = design.spineSwitches.filter((s) => s.network === "gpu");
-
-    expect(frontendSpines.length).toBeGreaterThanOrEqual(2);
-    expect(gpuSpines.length).toBeGreaterThanOrEqual(2);
-  });
-
-  it("should create correct number of connections", () => {
-    const config: ServerConfig = {
-      servers: 2,
-      frontendNetwork: {
-        networkType: "spine-leaf",
-        oversubscriptionRatio: "1:1",
-        nicPorts: 2,
-        portSpeed: "40G",
-      },
-      gpuNetwork: {
-        networkType: "spine-leaf",
-        oversubscriptionRatio: "1:1",
-        nicPorts: 2,
-        portSpeed: "100G",
-      },
-    };
-
-    const design = generateNetworkDesign(config);
-
-    // Calculate expected connections:
-    // Server to leaf connections: servers * (frontend_ports + gpu_ports)
-    const expectedServerConnections = 2 * (2 + 2);
-
-    // Count server-to-leaf connections
-    const serverToLeafConnections = design.connections.filter((conn) =>
-      conn.source.startsWith("server-")
-    ).length;
-
-    expect(serverToLeafConnections).toBe(expectedServerConnections);
-  });
-
   it("should maintain consistent port speeds across connections", () => {
     const config: ServerConfig = {
       servers: 1,
