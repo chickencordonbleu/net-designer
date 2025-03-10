@@ -1,34 +1,34 @@
-import { ServerConfig } from "../types/serverConfig.types";
+import { NetworkProject } from "@/entities/networkProjects";
 import { NetworkDesign, CISCO_SWITCH } from "../types/serverDesign.types";
 
 export const generateYamlConfig = (
-  serverConfig: ServerConfig,
+  networkProject: NetworkProject,
   design: NetworkDesign
 ): string => {
   // Start with server configuration
   let yaml = "servers:\n";
-  yaml += `  quantity: ${serverConfig.servers}\n`;
+  yaml += `  quantity: ${networkProject.servers}\n`;
   yaml += "  networks:\n";
 
   // Add frontend network
   yaml += `    - name: "frontend"\n`;
-  yaml += `      type: "${serverConfig.frontendNetwork.networkType}"\n`;
-  if (serverConfig.frontendNetwork.networkType === "spine-leaf") {
-    yaml += `      oversubscription_ratio: "${serverConfig.frontendNetwork.oversubscriptionRatio}"\n`;
+  yaml += `      type: "${networkProject.frontendNetwork.networkType}"\n`;
+  if (networkProject.frontendNetwork.networkType === "spine-leaf") {
+    yaml += `      oversubscription_ratio: "${networkProject.frontendNetwork.oversubscriptionRatio}"\n`;
   }
   yaml += `      nic-ports:\n`;
-  yaml += `        quantity: ${serverConfig.frontendNetwork.nicPorts}\n`;
-  yaml += `        speed: "${serverConfig.frontendNetwork.portSpeed}"\n`;
+  yaml += `        quantity: ${networkProject.frontendNetwork.nicPorts}\n`;
+  yaml += `        speed: "${networkProject.frontendNetwork.portSpeed}"\n`;
 
   // Add GPU network
   yaml += `    - name: "gpu"\n`;
-  yaml += `      type: "${serverConfig.gpuNetwork.networkType}"\n`;
-  if (serverConfig.gpuNetwork.networkType === "spine-leaf") {
-    yaml += `      oversubscription_ratio: "${serverConfig.gpuNetwork.oversubscriptionRatio}"\n`;
+  yaml += `      type: "${networkProject.gpuNetwork.networkType}"\n`;
+  if (networkProject.gpuNetwork.networkType === "spine-leaf") {
+    yaml += `      oversubscription_ratio: "${networkProject.gpuNetwork.oversubscriptionRatio}"\n`;
   }
   yaml += `      nic-ports:\n`;
-  yaml += `        quantity: ${serverConfig.gpuNetwork.nicPorts}\n`;
-  yaml += `        speed: "${serverConfig.gpuNetwork.portSpeed}"\n`;
+  yaml += `        quantity: ${networkProject.gpuNetwork.nicPorts}\n`;
+  yaml += `        speed: "${networkProject.gpuNetwork.portSpeed}"\n`;
 
   // Add Cisco switch information
   yaml += "\ncisco-switches:\n";

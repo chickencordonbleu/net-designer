@@ -14,3 +14,18 @@ export interface ServerConfig {
   frontendNetwork: NetworkConfig;
   gpuNetwork: NetworkConfig;
 }
+
+export interface NetworkProject {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  servers: number;
+  frontendNetwork: NetworkConfig;
+  gpuNetwork: NetworkConfig;
+}
+
+export type UpdateNetworkProjectType = Omit<
+  NetworkProject,
+  "createdAt" | "updatedAt"
+>;

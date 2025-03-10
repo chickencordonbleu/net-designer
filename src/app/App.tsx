@@ -1,13 +1,13 @@
 import { ThemeProvider } from "../components/theme-provider";
-import { RootLayout } from "./RootLayout";
-import { NetworkDesigner } from "../pages/NetworkDesigner/NetworkDesigner";
+import { ReactQueryProvider } from "./providers/ReactQueryProvider";
+import { RoutesProvider } from "./providers/RoutesProvider";
 
 export function App() {
   return (
     <ThemeProvider>
-      <RootLayout>
-        <NetworkDesigner />
-      </RootLayout>
+      <ReactQueryProvider>
+        <RoutesProvider />
+      </ReactQueryProvider>
     </ThemeProvider>
   );
 }

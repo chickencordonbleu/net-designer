@@ -11,17 +11,20 @@ import Editor from "@monaco-editor/react";
 import { Code2, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { generateYamlConfig } from "../helpers/yaml.helpers";
-import { ServerConfig } from "../types/serverConfig.types";
 import { NetworkDesign } from "../types/serverDesign.types";
+import { NetworkProject } from "@/entities/networkProjects";
 
 interface YamlSnipperProps {
   networkDesign: NetworkDesign;
-  serverConfig: ServerConfig;
+  networkProject: NetworkProject;
 }
 
-export function YamlSnipper({ serverConfig, networkDesign }: YamlSnipperProps) {
+export function YamlSnipper({
+  networkProject,
+  networkDesign,
+}: YamlSnipperProps) {
   const { theme } = useTheme();
-  const yaml = generateYamlConfig(serverConfig, networkDesign);
+  const yaml = generateYamlConfig(networkProject, networkDesign);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(yaml);

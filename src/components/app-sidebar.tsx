@@ -16,13 +16,13 @@ import {
 const data = {
   user: {
     name: "ClusterGen",
-    email: "admin@netforge.io",
+    email: "admin@clustergen.io",
     avatar: "/avatars/shadcn.jpg",
   },
   projects: [
     {
       name: "Network Designer",
-      url: "#",
+      url: "",
       icon: Workflow,
       isActive: true,
     },
