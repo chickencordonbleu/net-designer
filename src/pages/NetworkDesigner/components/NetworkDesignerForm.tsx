@@ -93,33 +93,6 @@ export function NetworkDesignerForm({
             </div>
             <FormField
               control={form.control}
-              name="frontendNetwork.oversubscriptionRatio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Oversubscription Ratio</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select ratio" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {OVERSUBSCRIPTION_RATIOS.map((ratio) => (
-                        <SelectItem key={ratio.value} value={ratio.value}>
-                          {ratio.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="frontendNetwork.nicPorts"
               render={({ field }) => (
                 <FormItem>
@@ -172,33 +145,6 @@ export function NetworkDesignerForm({
               <Network className="mr-2" size={16} />
               <h3 className="font-medium">GPU Network Configuration</h3>
             </div>
-            <FormField
-              control={form.control}
-              name="gpuNetwork.oversubscriptionRatio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Oversubscription Ratio</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select ratio" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {OVERSUBSCRIPTION_RATIOS.map((ratio) => (
-                        <SelectItem key={ratio.value} value={ratio.value}>
-                          {ratio.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="gpuNetwork.nicPorts"
