@@ -20,11 +20,13 @@ import { SpineNode } from "./SpineNode";
 import { DownloadDiagram } from "./DownloadDiagram";
 import { useTheme } from "@/components/theme-provider";
 import ELK from "elkjs/lib/elk.bundled.js";
+import { LabeledGroupNodeDemo } from "./LabeledGroupNodeDemo";
 
 const nodeTypes: NodeTypes = {
   server: ServerNode,
   leaf: LeafNode,
   spine: SpineNode,
+  labeledGroupNode: LabeledGroupNodeDemo,
 };
 
 interface DiagramProps {
@@ -49,8 +51,8 @@ const elkOptions = {
 function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
   const colorMode = useTheme().theme === "dark" ? "dark" : "light";
   const isDarkMode = colorMode === "dark";
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const [nodes, setNodes] = useNodesState<Node>([]);
+  const [edges, setEdges] = useEdgesState<Edge>([]);
   const { fitView } = useReactFlow();
 
   useEffect(() => {
@@ -60,6 +62,8 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
   // Create initial nodes without positions
   const initialNodes: Node[] = useMemo(() => {
     const result: Node[] = [];
+    const frontendNodes: string[] = [];
+    const gpuNodes: string[] = [];
 
     // Get unique networks
     const networks = Array.from(
@@ -86,6 +90,13 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
           },
           position: { x: 0, y: 0 }, // Initial position will be set by ELK
         });
+
+        // Track nodes by network
+        if (network === "frontend") {
+          frontendNodes.push(spine.id);
+        } else if (network === "gpu") {
+          gpuNodes.push(spine.id);
+        }
       });
 
       // Add leaf switches (middle layer)
@@ -115,6 +126,13 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
           data: nodeData,
           position: { x: 0, y: 0 }, // Initial position will be set by ELK
         });
+
+        // Track nodes by network
+        if (network === "frontend") {
+          frontendNodes.push(leaf.id);
+        } else if (network === "gpu") {
+          gpuNodes.push(leaf.id);
+        }
       });
     });
 
@@ -135,7 +153,47 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
         },
         position: { x: 0, y: 0 }, // Initial position will be set by ELK
       });
+
+      // We no longer track servers in network groups
+      // Server networks are tracked in the server data but not included in groups
     });
+
+    // Add group nodes for networks (will be positioned after layout)
+    if (frontendNodes.length > 0) {
+      result.push({
+        id: "group-frontend",
+        type: "labeledGroupNode",
+        data: {
+          label: "Frontend Network",
+          childNodeIds: frontendNodes,
+        },
+        position: { x: 0, y: 0 },
+        style: {
+          backgroundColor: "rgba(34, 197, 94, 0.1)",
+          borderColor: "#22c55e",
+          width: 500, // Will be adjusted after layout
+          height: 500, // Will be adjusted after layout
+        },
+      });
+    }
+
+    if (gpuNodes.length > 0) {
+      result.push({
+        id: "group-gpu",
+        type: "labeledGroupNode",
+        data: {
+          label: "GPU Network",
+          childNodeIds: gpuNodes,
+        },
+        position: { x: 0, y: 0 },
+        style: {
+          backgroundColor: "rgba(236, 72, 153, 0.1)",
+          borderColor: "#ec4899",
+          width: 500, // Will be adjusted after layout
+          height: 500, // Will be adjusted after layout
+        },
+      });
+    }
 
     return result;
   }, [networkDesign]);
@@ -182,11 +240,16 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
 
   // Apply ELK layout
   const getLayoutedElements = useCallback((nodes: Node[], edges: Edge[]) => {
+    // Filter out group nodes for layout
+    const nonGroupNodes = nodes.filter(
+      (node) => !["group-frontend", "group-gpu"].includes(node.id)
+    );
+
     // Create ELK graph format
     const elkGraph = {
       id: "root",
       layoutOptions: elkOptions,
-      children: nodes.map((node) => ({
+      children: nonGroupNodes.map((node) => ({
         id: node.id,
         width: 180, // Approximate node width
         height: 70, // Approximate node height
@@ -206,6 +269,11 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
     return elk.layout(elkGraph).then((layoutedGraph) => {
       // Apply layout changes to the nodes
       const layoutedNodes = nodes.map((node) => {
+        // Skip group nodes initially
+        if (["group-frontend", "group-gpu"].includes(node.id)) {
+          return node;
+        }
+
         const elkNode = layoutedGraph.children?.find((n) => n.id === node.id);
         if (elkNode) {
           return {
@@ -219,7 +287,51 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
         return node;
       });
 
-      return { nodes: layoutedNodes, edges };
+      // Now position and size the group nodes
+      const finalNodes = layoutedNodes.map((node) => {
+        if (node.id === "group-frontend" || node.id === "group-gpu") {
+          const childIds = node.data.childNodeIds as string[];
+          if (childIds.length === 0) return node;
+
+          // Find min/max positions of child nodes (only leaf and spine switches)
+          const childNodes = layoutedNodes.filter(
+            (n) =>
+              childIds.includes(n.id) &&
+              (n.type === "leaf" || n.type === "spine")
+          );
+          if (childNodes.length === 0) return node;
+
+          const positions = childNodes.map((n) => n.position);
+          const minX = Math.min(...positions.map((p) => p.x)) - 10;
+          const maxX = Math.max(...positions.map((p) => p.x + 180)) + 50;
+          const minY = Math.min(...positions.map((p) => p.y)) - 60;
+          const maxY = Math.max(...positions.map((p) => p.y + 70)) + 30;
+
+          // Update group position and size
+          return {
+            ...node,
+            position: { x: minX, y: minY },
+            style: {
+              ...node.style,
+              width: maxX - minX,
+              height: maxY - minY,
+            },
+          };
+        }
+        return node;
+      });
+
+      // Ensure group nodes are rendered below other nodes (z-index)
+      const sortedNodes = [
+        ...finalNodes.filter(
+          (n) => n.id === "group-frontend" || n.id === "group-gpu"
+        ),
+        ...finalNodes.filter(
+          (n) => n.id !== "group-frontend" && n.id !== "group-gpu"
+        ),
+      ];
+
+      return { nodes: sortedNodes, edges };
     });
   }, []);
 
@@ -252,13 +364,12 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
       <ReactFlow
         attributionPosition="bottom-right"
         colorMode={colorMode}
+        deleteKeyCode={null}
         edges={edges}
         fitView
+        minZoom={0.1}
         nodeTypes={nodeTypes}
         nodes={nodes}
-        minZoom={0.1}
-        onEdgesChange={onEdgesChange}
-        onNodesChange={onNodesChange}
         proOptions={{ hideAttribution: true }}
       >
         <Controls />
