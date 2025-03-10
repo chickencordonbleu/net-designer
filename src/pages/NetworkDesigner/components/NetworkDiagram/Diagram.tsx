@@ -230,6 +230,10 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
         fill: isDarkMode ? "#e2e8f0" : "#334155", // Light text for dark mode, dark text for light mode
       };
 
+      const numConnections = networkDesign.connections.filter(
+        (c) => c.source === conn.source && c.target === conn.target
+      ).length;
+
       return {
         id: conn.id,
         source: conn.source,
@@ -240,7 +244,7 @@ function DiagramDesign({ networkDesign, fullScreen }: DiagramProps) {
           speed: conn.speed,
           network: conn.network,
         },
-        label: conn.speed,
+        label: `${conn.speed} x ${numConnections}`,
         labelBgStyle: labelBgStyle,
         labelStyle: labelStyle,
       };

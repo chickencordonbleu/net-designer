@@ -54,7 +54,7 @@ export default function ServerNodeDialog({
     <Dialog>
       <DialogTrigger asChild>
         <button className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-          <Info className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+          <Info className="h-4 w-4 text-foreground" />
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">

@@ -120,28 +120,69 @@ export const generateNetworkDesign = (
     design.servers.forEach((server, serverIndex) => {
       const networkInfo = server.networks.find((n) => n.name === network.name);
       if (networkInfo) {
-        networkInfo.ports.forEach((_, portIndex) => {
-          // Distribute connections across different leaf switches for redundancy
-          const targetLeafIndex = (serverIndex + portIndex) % numLeafSwitches;
-          const targetLeaf = design.leafSwitches.find(
-            (leaf) => leaf.id === `${network.name}-leaf-${targetLeafIndex + 1}`
-          );
+        networkInfo.ports.forEach((port, portIndex) => {
+          // Start with round robin leaf switch assignment
+          const initialLeafIndex = portIndex % numLeafSwitches;
+          let connected = false;
 
-          if (targetLeaf && targetLeaf.downlinks) {
-            const portOnLeaf = Math.floor(serverIndex / numLeafSwitches);
-            if (portOnLeaf < targetLeaf.downlinks.length) {
-              design.connections.push({
-                id: `conn-server${serverIndex + 1}-${network.name}-port${
-                  portIndex + 1
-                }-to-leaf${targetLeafIndex + 1}`,
-                source: `server-${serverIndex + 1}`,
-                sourcePort: `${network.name}-port-${portIndex + 1}`,
-                target: targetLeaf.id,
-                targetPort: `downlink-${portOnLeaf + 1}`,
-                speed: network.nicPorts.speed,
-                network: network.name,
-              });
+          // Try each leaf switch until we find an available port
+          for (
+            let leafAttempt = 0;
+            leafAttempt < numLeafSwitches && !connected;
+            leafAttempt++
+          ) {
+            const currentLeafIndex =
+              (initialLeafIndex + leafAttempt) % numLeafSwitches;
+            const targetLeaf = design.leafSwitches.find(
+              (leaf) =>
+                leaf.id === `${network.name}-leaf-${currentLeafIndex + 1}`
+            );
+
+            if (targetLeaf && targetLeaf.downlinks) {
+              // Try each downlink port on the current leaf switch
+              for (
+                let portAttempt = 0;
+                portAttempt < targetLeaf.downlinks.length && !connected;
+                portAttempt++
+              ) {
+                const portOnLeaf = portAttempt + 1;
+
+                // Check if this port combination is already used
+                const portAlreadyUsed = design.connections.some(
+                  (conn) =>
+                    (conn.target === targetLeaf.id &&
+                      conn.targetPort === `downlink-${portOnLeaf}`) ||
+                    (conn.source === `server-${serverIndex + 1}` &&
+                      conn.sourcePort ===
+                        `${network.name}-port-${portIndex + 1}`)
+                );
+
+                if (!portAlreadyUsed) {
+                  design.connections.push({
+                    id: `conn-server${serverIndex + 1}-${network.name}-port${
+                      portIndex + 1
+                    }-to-leaf${currentLeafIndex + 1}-port${portOnLeaf}`,
+                    source: `server-${serverIndex + 1}`,
+                    sourcePort: `${network.name}-port-${portIndex + 1}`,
+                    target: targetLeaf.id,
+                    targetPort: `downlink-${portOnLeaf}`,
+                    speed: network.nicPorts.speed,
+                    network: network.name,
+                  });
+                  connected = true;
+                  break;
+                }
+              }
             }
+          }
+
+          // If we couldn't connect this port after trying all possibilities, log an error
+          if (!connected) {
+            console.error(
+              `Unable to connect server ${serverIndex + 1} port ${
+                portIndex + 1
+              } - no available leaf switch ports`
+            );
           }
         });
       }
