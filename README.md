@@ -20,3 +20,9 @@
 3. Ports per server. The server has n ports per config. Round robin connections ordered by number leaf-1, leaf-2....
 4. Drive connections by servers.
 5. See where the server is plugged in. Server 1 port one is connected to leaf 1 port 1.
+6. Rename downlink to port.
+7. Split the networks better.
+8. Leafs need to show connections from server.
+9. Make the dialogs bigger.
+10. Keep non blocking
+11. Port level

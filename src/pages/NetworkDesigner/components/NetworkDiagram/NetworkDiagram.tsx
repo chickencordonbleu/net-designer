@@ -19,7 +19,7 @@ export function NetworkDiagram({ networkDesign }: NetworkDiagramProps) {
   const handle = useFullScreenHandle();
 
   return (
-    <Card className="w-full flex-1 col-span-3 h-[700px] pb-0">
+    <Card className="w-full flex-1 col-span-5 h-[700px] pb-0">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex flex-col">
           <CardTitle className="flex items-center">

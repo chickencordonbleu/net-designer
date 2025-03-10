@@ -51,7 +51,7 @@ export function NetworkDesignerForm({
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full col-span-2">
       <CardHeader>
         <CardTitle className="flex items-center">
           <Server className="mr-2" size={20} />

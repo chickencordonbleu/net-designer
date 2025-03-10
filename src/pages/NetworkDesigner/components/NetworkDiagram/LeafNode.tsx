@@ -23,6 +23,12 @@ export function LeafNode({ data }: Props) {
   return (
     <BaseNode className="px-3 py-2 bg-purple-500 border-purple-600 w-48 text-white">
       <Handle type="source" position={Position.Top} id="a" />
+      <Handle type="source" position={Position.Left} id="b" />
+      <Handle type="source" position={Position.Right} id="c" />
+      <Handle type="source" position={Position.Bottom} id="d" />
+      <Handle type="source" position={Position.Top} id="e" />
+      <Handle type="source" position={Position.Top} id="f" />
+      <Handle type="source" position={Position.Top} id="g" />
       <NodeHeader className="-mx-3 -mt-2 border-b border-purple-400">
         <NodeHeaderIcon>
           <Leaf className="mr-1" size={16} />

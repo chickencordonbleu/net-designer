@@ -32,7 +32,7 @@ export function YamlSnipper({
   };
 
   return (
-    <Card className="w-full flex-1 col-span-2">
+    <Card className="w-full flex-1 col-span-3">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <div className="flex flex-col">
           <CardTitle className="flex items-center">

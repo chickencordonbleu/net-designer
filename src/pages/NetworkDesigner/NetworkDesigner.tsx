@@ -26,9 +26,9 @@ export function NetworkDesigner() {
   const networkDesign = generateNetworkDesign(networkProject);
 
   return (
-    <div className="grid grid-cols-3 gap-6 h-full overflow-auto p-6">
-      <NetworkDiagram networkDesign={networkDesign} />
+    <div className="grid grid-cols-5 gap-6 h-full overflow-auto p-6">
       <NetworkStats networkDesign={networkDesign} />
+      <NetworkDiagram networkDesign={networkDesign} />
       <NetworkDesignerForm networkProject={networkProject} />
       <YamlSnipper
         networkProject={networkProject}
