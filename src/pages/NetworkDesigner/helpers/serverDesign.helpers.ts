@@ -151,7 +151,7 @@ export const generateNetworkDesign = (
                 const portAlreadyUsed = design.connections.some(
                   (conn) =>
                     (conn.target === targetLeaf.id &&
-                      conn.targetPort === `downlink-${portOnLeaf}`) ||
+                      conn.targetPort === `port-${portOnLeaf}`) ||
                     (conn.source === `server-${serverIndex + 1}` &&
                       conn.sourcePort ===
                         `${network.name}-port-${portIndex + 1}`)
@@ -163,9 +163,9 @@ export const generateNetworkDesign = (
                       portIndex + 1
                     }-to-leaf${currentLeafIndex + 1}-port${portOnLeaf}`,
                     source: `server-${serverIndex + 1}`,
-                    sourcePort: `${network.name}-port-${portIndex + 1}`,
+                    sourcePort: `port-${portIndex + 1}`,
                     target: targetLeaf.id,
-                    targetPort: `downlink-${portOnLeaf}`,
+                    targetPort: `port-${portOnLeaf}`,
                     speed: network.nicPorts.speed,
                     network: network.name,
                   });
@@ -203,9 +203,9 @@ export const generateNetworkDesign = (
               design.connections.push({
                 id: `conn-${leaf.id}-to-${spine.id}-link${i + 1}`,
                 source: leaf.id,
-                sourcePort: `uplink-${uplinkOffset + i + 1}`,
+                sourcePort: `port-${uplinkOffset + i + 1}`,
                 target: spine.id,
-                targetPort: `downlink-${leafIndex * uplinksPerSpine + i + 1}`,
+                targetPort: `port-${leafIndex * uplinksPerSpine + i + 1}`,
                 speed: network.nicPorts.speed,
                 network: network.name,
               });
