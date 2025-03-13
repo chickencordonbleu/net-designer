@@ -1,0 +1,85 @@
+k8s-master-servers:
+  quantity: 3
+  cpu:
+    sockets: 1
+    cores-per-cpu: 32
+  ram:
+    dimms: 4
+    dimm-size: "32G"
+  nics:
+    - network: "frontend"
+      quantity: 1
+      ports: 2
+      speed: "25G"
+
+platform-worker-servers:
+  quantity: 3
+  cpu:
+    sockets: 1
+    cores-per-cpu: 64
+  ram:
+    dimms: 8
+    dimm-size: "32G"
+  nics:
+    - network: "frontend"
+      quantity: 1
+      ports: 2
+      speed: "25G"
+
+gpu-worker-servers:
+  quantity: 5
+  cpu:
+    sockets: 2
+    cores-per-cpu: 64
+  ram:
+    dimms: 16
+    dimm-size: "64G"
+  nics:
+    - network: "frontend"
+      quantity: 1
+      ports: 2
+      speed: "25G"
+    - network: "gpu"
+      quantity: 2
+      ports: 2
+      speed: "100G"
+
+
+networks:
+  - name: "frontend"
+    type: "stacked"
+    switches:
+      quantity: 2
+      model: Cisco-93180YC-FX
+    stack-links: 2
+    max-nodes: 46
+    lan-uplinks-per-switch: 2
+
+  - name: "gpu"
+    type: "spine-leaf"
+    oversubscription_ratio: "1:1"
+    switches:
+      spine:
+        model: Cisco-9336C-FX2
+      leaf:
+        model: Cisco-9336C-FX2
+
+
+switches:
+  cisco:
+    - model: "Cisco-9336C-FX2"
+      spine-capable: true
+      leaf-capable: true
+      stack-capable: true
+      switch-ports:
+        - speed: "100G"
+          quantity: 36
+    - model: "Cisco-93180YC-FX"
+      spine-capable: false
+      leaf-capable: true
+      stack-capable: true
+      switch-ports:
+        - speed: "25G"
+          quantity: 48
+        - speed: "100G"
+          quantity: 6
